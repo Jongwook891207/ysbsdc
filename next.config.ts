@@ -1,18 +1,19 @@
-import path from "node:path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  // Pins the workspace root to this directory explicitly. Without this,
-  // Next.js infers the root by walking up from here looking for a
-  // lockfile, and stops at the *first* one it finds — which can be a
-  // stray/unrelated lockfile in a parent folder that has nothing to do
-  // with this project (that's what was happening here: an orphaned,
-  // empty package-lock.json in the parent "작업 폴더" directory, which
-  // has no package.json of its own). Setting this explicitly is the
-  // documented fix and makes root detection deterministic regardless of
-  // what else does or doesn't exist above this folder.
-  outputFileTracingRoot: path.join(__dirname),
+  // outputFileTracingRoot was pinned here during stage 1 to work around an
+  // orphaned, empty package-lock.json that used to sit in the parent
+  // "작업 폴더" directory (no package.json of its own), which made Next's
+  // local-dev root-detection misfire. That lockfile has since been
+  // deleted, so the workaround is gone too — pinning it explicitly instead
+  // overrides Vercel's own root-directory detection for the build's file
+  // tracing step (`@vercel/nft`, the "Collecting build traces" step), which
+  // is the suspected cause of a build that completes tracing but never
+  // reports "Build Completed" on Vercel. Let Next.js/Vercel infer this on
+  // their own; only reintroduce it if a real monorepo lockfile-detection
+  // problem reappears, and prefer scoping it to the actual repo root Vercel
+  // uses rather than `__dirname`.
   images: {
     formats: ["image/avif", "image/webp"],
   },
