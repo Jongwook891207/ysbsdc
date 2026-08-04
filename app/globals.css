@@ -3091,3 +3091,100 @@ body.modal-open {
     transition: none !important;
   }
 }
+
+/* ==========================================================================
+   Column detail page (stage 4-2) — /column/[slug].
+
+   No prior static-HTML page to port pixel-perfect, so no legacy class name
+   collisions to guard against here (unlike .doctor-page/.treatment-page/
+   .mission-page) — .column-detail-* is a fresh namespace. Kept minimal on
+   purpose: base typography for whatever plain HTML elements MDX produces
+   (h2/h3/p/ul/ol/blockquote/code/pre/a) so a rendered article isn't
+   unstyled, nothing more — no TOC/related-articles/breadcrumb layout,
+   which are explicitly out of scope this stage.
+   ========================================================================== */
+.column-detail {
+  padding: 96px 0 120px;
+}
+.column-detail-header {
+  max-width: 720px;
+  margin: 0 auto 48px;
+}
+.column-detail-meta {
+  display: flex;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0;
+}
+.column-detail-body {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 2;
+}
+.column-detail-body h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 48px 0 16px;
+}
+.column-detail-body h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 32px 0 12px;
+}
+.column-detail-body p {
+  margin: 0 0 20px;
+  color: var(--text-muted);
+}
+.column-detail-body ul,
+.column-detail-body ol {
+  margin: 0 0 20px;
+  padding-left: 22px;
+  color: var(--text-muted);
+}
+.column-detail-body ul {
+  list-style: disc;
+}
+.column-detail-body ol {
+  list-style: decimal;
+}
+.column-detail-body li {
+  margin-bottom: 8px;
+}
+.column-detail-body a {
+  color: var(--brand);
+  text-decoration: underline;
+}
+.column-detail-body blockquote {
+  margin: 24px 0;
+  padding: 16px 20px;
+  border-left: 3px solid var(--point);
+  background: var(--brand-soft);
+  color: var(--text);
+}
+.column-detail-body code {
+  background: var(--brand-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+.column-detail-body pre {
+  background: var(--brand-soft);
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+.column-detail-body pre code {
+  background: none;
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .column-detail {
+    padding: 64px 0 80px;
+  }
+}

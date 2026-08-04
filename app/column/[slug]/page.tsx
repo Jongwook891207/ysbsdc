@@ -1,28 +1,61 @@
 import { notFound } from "next/navigation";
+import { ArticleBody } from "@/components/content/ArticleBody";
+import { columnSource } from "@/lib/content/sources/columns";
+import { authorSource } from "@/lib/content/sources/authors";
+import { formatDateKo, toDateTimeAttr } from "@/lib/utils";
 
 /**
- * STAGE 1 PLACEHOLDER.
- * TODO(stage 4): add `export async function generateStaticParams()` (SSG
- * over lib/columns.ts#getAllColumnSlugs()), MDX render (next-mdx-remote/rsc),
- * breadcrumb, author bio, related columns, prev/next.
- * TODO(stage 5): add `export async function generateMetadata()` (via
- * lib/metadata.ts#buildColumnMetadata) and render
- * <JsonLd data={buildArticleJsonLd(column, author)} /> +
- * <JsonLd data={buildBreadcrumbJsonLd(items)} />.
- * Until generateStaticParams exists, this route falls back to on-demand
- * SSR for every slug — that's the "임시" part to be aware of.
+ * Stage 4-2: real MDX rendering, built directly on stage 4-1's content
+ * layer (columnSource/authorSource) — nothing in lib/content/ changed for
+ * this.
+ *
+ * generateStaticParams uses getPublished() (not getAll()) so drafts are
+ * never pre-rendered at build time. The page component itself still calls
+ * getBySlug() (not draft-filtered) rather than getPublished().find(...) —
+ * requesting a draft's URL directly still renders it on-demand (Next's
+ * default `dynamicParams` behavior for a slug outside
+ * generateStaticParams), matching how gray-matter/loader.ts already treat
+ * "draft" as "excluded from public *listings*," not "unrenderable." There's
+ * no separate preview/auth system yet, so this is the same policy stage
+ * 4-1 already established, just now visible through a real page.
+ *
+ * TODO(stage 5): generateMetadata() (title/description/canonical/OG from
+ * frontmatter) and <JsonLd data={buildArticleJsonLd(column, author)} />.
+ * TODO(later stage): Breadcrumb, TOC, Reading Time display, Related
+ * Articles — explicitly out of scope this stage.
  */
+export async function generateStaticParams() {
+  return columnSource.getPublished().map((entry) => ({ slug: entry.frontmatter.slug }));
+}
+
 export default async function ColumnDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  if (!slug) notFound();
+  const column = columnSource.getBySlug(slug);
+  if (!column) notFound();
+
+  const author = authorSource.getBySlug(column.frontmatter.authorSlug);
 
   return (
-    <article>
-      <h1>칼럼: {slug}</h1>
-    </article>
+    <div className="column-detail">
+      <article className="container">
+        <header className="column-detail-header">
+          <p className="eyebrow">{column.frontmatter.category}</p>
+          <h1>{column.frontmatter.title}</h1>
+          <p className="column-detail-meta">
+            {author && <span>{author.frontmatter.name}</span>}
+            <time dateTime={toDateTimeAttr(column.frontmatter.publishedAt)}>
+              {formatDateKo(column.frontmatter.publishedAt)}
+            </time>
+          </p>
+        </header>
+        <div className="column-detail-body">
+          <ArticleBody source={column.content} />
+        </div>
+      </article>
+    </div>
   );
 }
