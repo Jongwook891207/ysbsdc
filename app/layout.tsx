@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SmartFloatingBar } from "@/components/layout/SmartFloatingBar";
-import { JsonLd } from "@/components/seo/JsonLd";
-import { buildDentistJsonLd } from "@/lib/jsonld";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
@@ -48,9 +47,24 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/fonts-archive/S-CoreDream/S-CoreDream.css"
         />
+        {/*
+          Font Awesome (icon font) — kept as the CDN <link> the static site
+          already used (index.html's Treatment Menu icons). Pure CSS/webfont,
+          no JS bundle cost; same reasoning as the font link above.
+        */}
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        />
       </head>
       <body>
-        <JsonLd data={buildDentistJsonLd()} />
+        {/*
+          No site-wide Dentist/MedicalBusiness JSON-LD here — per the
+          approved architecture, the complete entity is only rendered on
+          the homepage (app/page.tsx). Other pages will reference it by
+          @id (publisher/worksFor) once they have their own JSON-LD.
+        */}
+        <ScrollReveal />
         <Header />
         <main>{children}</main>
         <Footer />

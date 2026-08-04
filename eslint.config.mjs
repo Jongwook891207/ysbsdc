@@ -15,7 +15,14 @@ const eslintConfig = [
   // when loaded through FlatCompat, so build output has to be excluded
   // explicitly or a bare `eslint .` will try to lint .next/'s generated JS.
   {
-    ignores: [".next/**", "node_modules/**", "next-env.d.ts"],
+    ignores: [
+      ".next/**",
+      ".vercel/**",
+      "node_modules/**",
+      "out/**",
+      "coverage/**",
+      "next-env.d.ts",
+    ],
   },
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {

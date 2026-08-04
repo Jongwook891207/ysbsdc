@@ -2,25 +2,56 @@ import { CLINIC, SITE_URL, absoluteUrl } from "./seo";
 import type { BreadcrumbItem, Column, Doctor } from "./types";
 
 /**
- * Stage 2 implements buildDentistJsonLd() now — it's the one builder
- * app/layout.tsx needs for the site-wide JSON-LD injected on every page.
- * The rest stay signatures-only until stage 5's full Article/Person/
- * Breadcrumb/FAQ system, built as pure functions (schema object in, no
- * React/DOM involved) so <JsonLd data={...}> is the only place that
- * touches serialization. Planned builders:
+ * Every builder here returns a bare entity object — no `@context` — so any
+ * combination of them can be dropped into a single `@graph` via
+ * buildGraph(). Fixed `@id`s (per the approved architecture) so entities
+ * can reference each other instead of repeating themselves:
  *
- *  - buildPersonJsonLd(doctor)  — Person, on /doctor/[slug]
- *  - buildArticleJsonLd(column) — Article, on /column/[slug]
- *  - buildBreadcrumbJsonLd(items) — BreadcrumbList, paired with <Breadcrumb>
- *  - buildFaqJsonLd(faqs)       — FAQPage, wherever an FAQ block exists
+ *  - Dentist:        `${SITE_URL}/#dentist`
+ *  - 김종욱 원장:      `${SITE_URL}/doctor/kim-jongwook#person`
+ *  - Article (per glob): `${canonicalUrl}#article`
+ *  - Breadcrumb:      `${canonicalUrl}#breadcrumb`
+ *  - FAQPage:         `${canonicalUrl}#faq`
  *
- * Parameters are prefixed with `_` and unused for now — see lib/columns.ts
- * for why.
+ * buildDentistJsonLd() outputs the *complete* entity — per the architecture,
+ * only the homepage (or a future hospital-intro page) should render it in
+ * full; other pages should reference it by `@id` (e.g.
+ * `publisher: { "@id": "${SITE_URL}/#dentist" }`) once they have their own
+ * JSON-LD (stage 4/5). buildPersonJsonLd/buildArticleJsonLd/
+ * buildBreadcrumbJsonLd stay signatures-only until stage 4/5 build the
+ * column/doctor pages that need them.
  */
+
+export function buildGraph(entities: Record<string, unknown>[]): Record<string, unknown> {
+  return {
+    "@context": "https://schema.org",
+    "@graph": entities,
+  };
+}
+
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+/** FAQPage — `mainEntity` is one `Question`/`acceptedAnswer` pair per item. */
+export function buildFaqJsonLd(items: FaqItem[], canonicalUrl: string): Record<string, unknown> {
+  return {
+    "@type": "FAQPage",
+    "@id": `${canonicalUrl}#faq`,
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
 
 export function buildDentistJsonLd(): Record<string, unknown> {
   return {
-    "@context": "https://schema.org",
     "@type": ["Dentist", "MedicalBusiness"],
     "@id": `${SITE_URL}/#dentist`,
     name: CLINIC.name,
