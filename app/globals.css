@@ -2384,6 +2384,688 @@ body.modal-open {
 }
 
 /* ==========================================================================
+   Mission page (stage 3-4) — ported from mission.html.
+
+   No class-name collisions with index/doctor/treatment this time (the
+   mission-hero, story, vision, values, and closing class prefixes are all
+   unique to this page), so most rules don't need the leak-defense
+   doctor/treatment needed. Still scoped under .mission-page throughout for
+   consistency and to protect future pages.
+
+   One deliberate substitution: the source's own scroll-reveal used a
+   separate `.mission-inview` class toggled by a page-local
+   IntersectionObserver script. That's replaced here by the already-shared
+   ScrollReveal.tsx / `.aos-animate` mechanism (mounted once in the root
+   layout) — same effect, one mechanism instead of two. The visual result
+   only differs from the source in one respect: source only revealed
+   `[data-aos]` elements once per page load and CSS scoped the effect to
+   mobile only, which is preserved exactly below (desktop cancels the
+   shared global hide-by-default rule; the fade-in-up only happens ≤768px).
+   ========================================================================== */
+
+.mission-page {
+  font-size: 15.5px;
+  line-height: 2;
+}
+.mission-page h1,
+.mission-page h2,
+.mission-page h3 {
+  margin: 0 0 20px;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+}
+.mission-page .eyebrow {
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  margin-bottom: 16px;
+}
+.mission-page .section-head {
+  max-width: 680px;
+}
+.mission-page .rule {
+  width: 40px;
+  height: 2px;
+  background: var(--point);
+  margin: 0 0 24px;
+}
+.mission-page .rule.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.mission-page .btn {
+  padding: 16px 30px;
+  gap: 10px;
+}
+.mission-page .highlight-gold {
+  color: var(--point-2);
+}
+
+/* Cancel the shared global [data-aos] hide-by-default rule — this page's
+   reveal effect only applies on mobile (see the ≤768px block below);
+   desktop elements are visible immediately, matching the source exactly. */
+.mission-page [data-aos] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ===== Hero ===== */
+.mission-page .mission-hero {
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 140px 0;
+  overflow: hidden;
+}
+.mission-page .mission-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15, 44, 89, 0.96), rgba(11, 34, 69, 0.88));
+  z-index: 0;
+}
+.mission-page .mission-hero .container {
+  position: relative;
+  z-index: 1;
+  max-width: 820px;
+}
+.mission-page .mission-hero .eyebrow {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: var(--point-2);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  padding: 9px 20px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+.mission-page .mission-hero h1 {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.6;
+  color: #fff;
+  margin: 0;
+}
+.mission-page .mission-hero .highlight-gold {
+  color: var(--point-2);
+}
+.mission-page .mission-hero-mobile-title {
+  display: none;
+}
+.mission-page .mission-scroll-cue {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mission-page .mission-hero h1 {
+    font-size: 42px;
+  }
+}
+
+/* ===== Why We Exist (Doctor Story) ===== */
+.mission-page .story-section {
+  background: var(--bg);
+}
+.mission-page .story-head {
+  max-width: 760px;
+  margin: 0 0 48px;
+}
+.mission-page .story-head h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1.6;
+}
+.mission-page .story-body {
+  max-width: 760px;
+}
+.mission-page .story-body p {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 2;
+  margin: 0 0 24px;
+}
+.mission-page .story-body p:last-child {
+  margin-bottom: 0;
+}
+.mission-page .story-body p.story-quote-line {
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0 0 12px;
+  padding-left: 18px;
+  border-left: 3px solid var(--point);
+}
+.mission-page .story-body strong {
+  color: var(--brand);
+  font-weight: 800;
+}
+.mission-page .story-final {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mission-page .story-head h2 {
+    font-size: 30px;
+  }
+}
+
+/* ===== Vision ===== */
+.mission-page .vision-section {
+  background: var(--bg);
+}
+.mission-page .vision-card {
+  background: var(--brand);
+  color: #fff;
+  border-radius: 24px;
+  border: 1px solid rgba(212, 163, 115, 0.4);
+  padding: 64px 56px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.mission-page .vision-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 3px;
+  background: var(--point);
+}
+.mission-page .vision-card p {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.8;
+  color: #fff;
+  margin: 0 auto;
+  max-width: 680px;
+}
+.mission-page .vision-card p strong {
+  color: var(--point-2);
+}
+
+@media (min-width: 768px) {
+  .mission-page .vision-card p {
+    font-size: 24px;
+  }
+}
+
+/* ===== Core Values ===== */
+.mission-page .values-section {
+  background: #f5efe3;
+}
+.mission-page .promise-head {
+  max-width: 760px;
+  margin: 0 0 56px;
+}
+.mission-page .promise-head h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.mission-page .promise-head p {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 2;
+  margin: 0;
+}
+.mission-page .promise-gap-block {
+  display: inline;
+}
+.mission-page .values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+.mission-page .value-card {
+  background: var(--card);
+  border-radius: 20px;
+  padding: 40px 32px;
+  box-shadow: var(--shadow);
+  border-top: 3px solid var(--point);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.mission-page .value-num {
+  color: var(--point-2);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+.mission-page .value-card h3 {
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0;
+}
+.mission-page .value-quote {
+  background: #f7f5f0;
+  border-left: 4px solid var(--point);
+  border-radius: 8px;
+  padding: 20px 22px;
+}
+.mission-page .value-quote p {
+  color: var(--brand);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.8;
+  margin: 0;
+}
+.mission-page .value-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+}
+.mission-page .value-actions li {
+  position: relative;
+  padding-left: 20px;
+  color: var(--text-muted);
+  font-size: 14.5px;
+  line-height: 1.8;
+}
+.mission-page .value-actions li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--point);
+  font-weight: 800;
+}
+
+@media (max-width: 960px) {
+  .mission-page .values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Closing Section ===== */
+.mission-page .closing-section {
+  background-color: #f9f7f2;
+  border-top: 1px solid rgba(212, 163, 115, 0.3);
+  border-bottom: 1px solid rgba(212, 163, 115, 0.3);
+  text-align: center;
+  padding: 140px 0;
+}
+.mission-page .closing-inner {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.mission-page .closing-badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--point-soft);
+  color: #9c6b32;
+  padding: 9px 20px;
+  border-radius: 100px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  margin-bottom: 24px;
+}
+.mission-page .closing-badge-mobile {
+  display: none;
+}
+.mission-page .closing-inner h2 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+.mission-page .closing-body p {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 2;
+  margin: 0 0 22px;
+}
+.mission-page .closing-body p:last-child {
+  margin-bottom: 0;
+}
+.mission-page .closing-body strong {
+  color: var(--brand);
+  font-weight: 800;
+}
+.mission-page .closing-sign {
+  margin: 36px 0 40px;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--point);
+}
+.mission-page .closing-section .btn {
+  width: 100%;
+  max-width: 340px;
+}
+
+@media (min-width: 768px) {
+  .mission-page .closing-inner h2 {
+    font-size: 30px;
+  }
+}
+
+/* ===== Mobile (≤768px): full mobile-only redesign ported from mission.html ===== */
+@media (max-width: 768px) {
+  .mission-page {
+    line-height: 1.8;
+  }
+  .mission-page .container {
+    max-width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .mission-page section {
+    padding: 64px 0;
+  }
+
+  .mission-page [data-aos] {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s ease;
+  }
+  .mission-page [data-aos].aos-animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== Hero: full first-screen height ===== */
+  .mission-page .mission-hero {
+    min-height: calc(100dvh - 60px);
+    padding-top: 56px;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom) + 24px);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .mission-page .mission-hero::before {
+    background-image: url("/images/hero-hands.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%);
+  }
+  .mission-page .mission-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
+    z-index: 0;
+  }
+  .mission-page .mission-hero .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .mission-page .mission-hero .container {
+      animation: missionHeroFadeInUp 0.9s ease-out both;
+    }
+  }
+  @keyframes missionHeroFadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .mission-page .mission-hero .eyebrow {
+    font-size: 12px;
+    padding: 8px 16px;
+    margin-bottom: 20px;
+  }
+  .mission-page .mission-hero h1.desktop-only {
+    /* The shared br.desktop-only utility only qualifies <br> elements, so
+       it never matched this <h1> — this page-specific rule (present in
+       the original mission.html) is the only thing hiding the desktop
+       headline on mobile. Missing this was the duplicate-headline bug. */
+    display: none;
+  }
+  .mission-page .mission-hero-mobile-title {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.55;
+    color: #fff;
+    margin: 0;
+    word-break: keep-all;
+  }
+  .mission-page .mission-hero-mobile-title .highlight-marker {
+    /* index.html's own (unscoped) .highlight-marker sets a gradient
+       background + padding for its own mobile hero — reset both here so
+       they can't leak in, since this page's marker is text-only (see
+       the design note above: sand-gold text, not a background block). */
+    background: none;
+    padding: 0;
+    color: #e0c9a6;
+    font-weight: 800;
+    text-shadow: 0 0 24px rgba(224, 201, 166, 0.3);
+  }
+  .mission-page .mission-scroll-cue {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 11px;
+    animation: missionScrollCue 1.8s ease-in-out infinite;
+  }
+  .mission-page .mission-scroll-cue-label {
+    display: block;
+    text-align: center;
+    letter-spacing: 0.1em;
+    margin-right: -0.1em;
+  }
+  .mission-page .mission-scroll-cue svg {
+    display: block;
+    margin: 0 auto;
+  }
+  @keyframes missionScrollCue {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translateY(6px);
+      opacity: 1;
+    }
+  }
+
+  /* ===== Story: fill first screen, breathe vertically ===== */
+  .mission-page .story-section {
+    min-height: 100dvh;
+    padding: 100px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .mission-page .story-head h2 {
+    font-size: 21px;
+  }
+  .mission-page .story-body p {
+    font-size: 15px;
+  }
+  .mission-page .story-body p:first-child {
+    margin-bottom: 90px;
+  }
+  .mission-page .story-body p.story-quote-line {
+    font-size: 15.5px;
+  }
+  .mission-page .story-highlight {
+    background: linear-gradient(180deg, rgba(243, 232, 211, 0) 55%, rgba(243, 232, 211, 0.6) 55%);
+    padding: 0 2px;
+  }
+  .mission-page .story-body .story-lead-emphasis {
+    display: inline-block;
+    color: #0e2347;
+    background-color: #f3e8d3;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-bottom: 90px;
+  }
+  .mission-page .story-body p.story-lead {
+    margin-bottom: 0;
+  }
+  .mission-page .story-final {
+    display: block;
+    margin-top: 0;
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 2;
+    word-break: keep-all;
+  }
+
+  /* ===== Vision: hero-matched dark full-bleed treatment ===== */
+  .mission-page .vision-section {
+    position: relative;
+    overflow: hidden;
+    min-height: 68vh;
+    padding: 110px 0;
+    display: flex;
+    align-items: center;
+  }
+  .mission-page .vision-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("/images/vision-hallway.jpg");
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(100%);
+    z-index: 0;
+  }
+  .mission-page .vision-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
+    z-index: 0;
+  }
+  .mission-page .vision-section .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  .mission-page .vision-section .rule {
+    display: none;
+  }
+  .mission-page .vision-section .eyebrow {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(212, 163, 115, 0.5);
+    color: var(--point-2);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    padding: 8px 16px;
+    border-radius: 100px;
+  }
+  .mission-page .vision-card {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 40px 0 0;
+    border-radius: 0;
+  }
+  .mission-page .vision-card::before {
+    display: none;
+  }
+  .mission-page .vision-card p {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.7;
+    color: #fff;
+    word-break: keep-all;
+  }
+  .mission-page .vision-card p strong {
+    background: linear-gradient(180deg, rgba(224, 169, 109, 0) 55%, rgba(224, 169, 109, 0.55) 55%);
+    color: #fff;
+    padding: 0 4px;
+    font-weight: 800;
+  }
+
+  .mission-page .promise-head {
+    margin-bottom: 36px;
+  }
+  .mission-page .promise-head h2 {
+    font-size: 21px;
+    margin-bottom: 60px;
+  }
+  .mission-page .promise-head h2 .promise-head-break {
+    display: inline;
+  }
+  .mission-page .promise-head p {
+    font-size: 15px;
+    color: var(--text);
+  }
+  .mission-page .promise-emphasis {
+    font-weight: 800;
+    color: var(--brand);
+  }
+  .mission-page .promise-gap-block {
+    display: block;
+    margin-top: 60px;
+  }
+
+  .mission-page .value-card {
+    padding: 28px 22px;
+    gap: 18px;
+  }
+  .mission-page .value-quote {
+    padding: 16px 18px;
+  }
+  .mission-page .value-quote p {
+    font-size: 14px;
+  }
+  .mission-page .value-actions li {
+    font-size: 14px;
+  }
+
+  .mission-page .closing-section {
+    padding: 72px 0;
+  }
+  .mission-page .closing-inner h2 {
+    font-size: 21px;
+  }
+  .mission-page .closing-body p {
+    font-size: 15px;
+  }
+  .mission-page .closing-section .btn {
+    max-width: 100%;
+  }
+  .mission-page .closing-badge-desktop {
+    display: none;
+  }
+  .mission-page .closing-badge-mobile {
+    display: inline-flex;
+  }
+  .mission-page .closing-body p .closing-break {
+    display: inline;
+  }
+}
+
+/* ==========================================================================
    Scroll reveal — replaces the AOS library used by the static site.
    ScrollReveal.tsx (components/ui/ScrollReveal.tsx) toggles `.aos-animate`
    via IntersectionObserver on any [data-aos] element; `data-aos-delay` is
