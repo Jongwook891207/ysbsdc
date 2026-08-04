@@ -3188,3 +3188,140 @@ body.modal-open {
     padding: 64px 0 80px;
   }
 }
+
+/* ==========================================================================
+   Column list page (stage 4-3) — /column.
+
+   No prior static-HTML page to port either (same as .column-detail-*), so
+   no legacy collisions to guard against. Deliberately does NOT reuse
+   index.html's .column-card/.column-grid/.column-thumb/.column-body/
+   .column-date class names, even scoped — those are bare/unscoped rules
+   on the home page (home was never retrofitted with a .home-page wrapper,
+   see stage 3-2/3-3's notes on that), so reusing the literal names here
+   would only re-open the exact leak risk already solved elsewhere by
+   picking non-colliding names. .column-list-* avoids it outright. Reuses
+   the sitewide default .eyebrow/h1/.container/.btn tokens as-is (no
+   .column-page override for them) per "기존 토큰과 컨테이너 시스템을
+   재사용" — this page has no different typography to port.
+   ========================================================================== */
+.column-page .content-list-hero {
+  background: linear-gradient(180deg, #f3ede0 0%, var(--bg) 100%);
+  padding: 100px 0 64px;
+  text-align: center;
+}
+.column-page .content-list-hero .container {
+  max-width: 720px;
+}
+.column-page .content-list-hero-desc {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.9;
+  margin: 0;
+}
+
+.column-page .column-list-section {
+  padding: 64px 0 140px;
+}
+.column-page .column-list-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 32px;
+}
+
+.column-page .column-list-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.column-page .column-list-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.column-page .column-list-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(15, 44, 89, 0.12);
+}
+.column-page .column-list-card-link {
+  display: block;
+  color: inherit;
+}
+.column-page .column-list-card-link:focus-visible {
+  outline: 2px solid var(--point);
+  outline-offset: 3px;
+}
+.column-page .column-list-thumb {
+  aspect-ratio: 16 / 10;
+  background: var(--point-soft);
+  position: relative;
+}
+.column-page .column-list-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.column-page .column-list-body {
+  padding: 20px 22px 22px;
+}
+.column-page .column-list-category {
+  display: inline-block;
+  color: var(--point-2);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.column-page .column-list-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 8px;
+}
+.column-page .column-list-summary {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0 0 14px;
+}
+.column-page .column-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.column-page .column-list-reading-time::before {
+  content: "·";
+  margin-right: 10px;
+}
+
+.column-page .content-empty-state {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 15px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+}
+
+@media (max-width: 960px) {
+  .column-page .column-list-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 768px) {
+  .column-page .content-list-hero {
+    padding: 64px 0 40px;
+  }
+}
