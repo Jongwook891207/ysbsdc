@@ -1,6 +1,8 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import { mdxComponents } from "./mdx/mdxComponents";
+import { createHeadingComponents } from "./mdx/createHeadingComponents";
+import type { TocItem } from "@/lib/toc";
 
 /**
  * The one place in the codebase that compiles/renders an MDX body — every
@@ -16,21 +18,38 @@ import { mdxComponents } from "./mdx/mdxComponents";
  *  - No H1-in-body enforcement here: `lib/content/mdxGuards.ts` already
  *    rejects an H1 at content-load time (stage 4-1), before this
  *    component ever sees the body — adding a second, AST-based remark
- *    check here now would just duplicate that. The extension point for
- *    one (or a heading-slug plugin for a future TOC) is `remarkPlugins`/
- *    `rehypePlugins` below — adding either doesn't require touching any
- *    page that renders <ArticleBody>.
+ *    check here now would just duplicate that.
+ *
+ * `blockJS: false` is required: `next-mdx-remote/serialize` treats MDX as
+ * potentially-untrusted "remote" content by default and strips every JSX
+ * expression container (`attr={...}` of ANY type — string, number, array,
+ * object; see `removeJavaScriptExpressions` in its `serialize.js`) unless
+ * this is set. Our MDX is first-party, filesystem-sourced, and already
+ * zod-validated at load time (lib/content/loader.ts), so it isn't the
+ * untrusted content that default guards against — but without this flag,
+ * every non-string component prop (e.g. Checklist's `items={[...]}`)
+ * silently compiles away to `{}`, which is the bug this comment now
+ * documents. `blockDangerousJS` is left at its default `true` (blocks
+ * `eval`/`Function`/dynamic `import()` etc.) as cheap defense-in-depth on
+ * top of that trust.
+ *
+ * `tocItems` (from `lib/toc.ts#extractToc`, computed by the caller from the
+ * same raw source) drives id assignment on the rendered h2/h3 elements via
+ * `createHeadingComponents` — see that file for why this is positional
+ * rather than a second slugify pass. A fresh instance is created per call
+ * so the running counter never leaks across renders/requests.
  */
-export function ArticleBody({ source }: { source: string }) {
+export function ArticleBody({ source, tocItems }: { source: string; tocItems: TocItem[] }) {
   return (
     <MDXRemote
       source={source}
-      components={mdxComponents}
+      components={{ ...mdxComponents, ...createHeadingComponents(tocItems) }}
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm],
           rehypePlugins: [],
         },
+        blockJS: false,
       }}
     />
   );

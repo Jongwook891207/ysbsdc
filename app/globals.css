@@ -20,6 +20,11 @@
   --card: #ffffff;
   --line: #e9e2d6;
   --shadow: 0 10px 30px rgba(15, 44, 89, 0.08);
+  /* Stage 4-4: muted terracotta for the MDX Warning component — deliberately
+     not red, so a clinical-caution box doesn't read as an alarm/error state
+     against the site's navy/gold/ivory palette. */
+  --warn: #b8622f;
+  --warn-soft: #f7ead9;
 }
 
 * {
@@ -3093,36 +3098,173 @@ body.modal-open {
 }
 
 /* ==========================================================================
-   Column detail page (stage 4-2) — /column/[slug].
+   Column detail page (stage 4-2, extended stage 4-4) — /column/[slug].
 
    No prior static-HTML page to port pixel-perfect, so no legacy class name
    collisions to guard against here (unlike .doctor-page/.treatment-page/
-   .mission-page) — .column-detail-* is a fresh namespace. Kept minimal on
-   purpose: base typography for whatever plain HTML elements MDX produces
-   (h2/h3/p/ul/ol/blockquote/code/pre/a) so a rendered article isn't
-   unstyled, nothing more — no TOC/related-articles/breadcrumb layout,
-   which are explicitly out of scope this stage.
+   .mission-page) — .column-detail- and .column-article- prefixes are a
+   fresh namespace. Stage 4-4 adds: breadcrumb, article header, thumbnail, desktop TOC
+   sidebar + mobile collapsible TOC, MDX component styling, author/reviewer
+   bio, tag list, related-treatment links, related articles. All still
+   scoped under .column-detail so nothing here can leak onto other pages.
    ========================================================================== */
 .column-detail {
   padding: 96px 0 120px;
 }
-.column-detail-header {
+.column-detail .breadcrumb {
   max-width: 720px;
-  margin: 0 auto 48px;
+  margin: 0 auto 32px;
 }
-.column-detail-meta {
+.column-detail .breadcrumb ol {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
   color: var(--text-muted);
-  font-size: 14px;
+}
+.column-detail .breadcrumb li + li::before {
+  content: "/";
+  margin-right: 6px;
+  color: var(--line);
+}
+.column-detail .breadcrumb a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.column-detail .breadcrumb a:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+.column-detail .breadcrumb li[aria-current="page"] {
+  color: var(--brand);
+  font-weight: 600;
+  /* Long titles shouldn't stretch the breadcrumb row — truncate instead. */
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.column-article-header {
+  max-width: 720px;
+  margin: 0 auto 40px;
+}
+.column-article-eyebrow {
+  display: inline-block;
+  color: var(--point-2);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-bottom: 10px;
+}
+.column-article-header h1 {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1.4;
+  margin: 0 0 16px;
+}
+.column-article-summary {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin: 0 0 20px;
+}
+.column-article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+  font-size: 13px;
   margin: 0;
 }
+.column-article-meta > *:not(:first-child)::before {
+  content: "·";
+  margin-right: 10px;
+  color: var(--line);
+}
+.column-article-meta-author {
+  color: var(--brand);
+  font-weight: 600;
+}
+.column-article-reviewed {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.column-detail-thumb {
+  max-width: 960px;
+  margin: 0 auto 48px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.column-detail-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.column-detail-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 720px);
+  justify-content: center;
+  gap: 48px;
+  align-items: start;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.column-toc {
+  position: sticky;
+  top: 96px;
+}
+.column-toc summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--brand);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+.column-toc ol {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  border-left: 2px solid var(--line);
+}
+.column-toc li {
+  margin-bottom: 8px;
+}
+.column-toc li[data-level="3"] {
+  padding-left: 16px;
+}
+.column-toc a {
+  display: block;
+  padding-left: 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-decoration: none;
+  line-height: 1.5;
+}
+.column-toc a:hover {
+  color: var(--brand);
+}
+
 .column-detail-body {
   max-width: 720px;
-  margin: 0 auto;
   color: var(--text);
   font-size: 16px;
   line-height: 2;
+}
+.column-detail-body h2,
+.column-detail-body h3 {
+  scroll-margin-top: 100px;
 }
 .column-detail-body h2 {
   font-size: 22px;
@@ -3155,6 +3297,18 @@ body.modal-open {
 .column-detail-body li {
   margin-bottom: 8px;
 }
+.column-detail-body strong {
+  color: var(--text);
+  font-weight: 700;
+}
+.column-detail-body em {
+  font-style: italic;
+}
+.column-detail-body hr {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 40px 0;
+}
 .column-detail-body a {
   color: var(--brand);
   text-decoration: underline;
@@ -3182,10 +3336,261 @@ body.modal-open {
   background: none;
   padding: 0;
 }
+.column-detail-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 24px;
+  font-size: 14px;
+}
+.column-detail-body th,
+.column-detail-body td {
+  border: 1px solid var(--line);
+  padding: 10px 12px;
+  text-align: left;
+}
+.column-detail-body th {
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+.column-detail-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+.column-detail-body figure {
+  margin: 24px 0;
+}
+.column-detail-body figcaption {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: center;
+}
 
+/* MDX components (stage 4-4) */
+.mdx-callout,
+.mdx-warning {
+  margin: 28px 0;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border-left: 3px solid var(--point);
+  background: var(--brand-soft);
+}
+.mdx-callout-title,
+.mdx-warning-title {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: var(--brand);
+}
+.mdx-callout-body,
+.mdx-warning-body {
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.mdx-warning {
+  border-left-color: var(--warn);
+  background: var(--warn-soft);
+}
+.mdx-warning-title {
+  color: var(--warn);
+}
+
+.mdx-quote {
+  margin: 28px 0;
+  padding: 4px 0 4px 20px;
+  border-left: 3px solid var(--point);
+}
+.mdx-quote blockquote {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text);
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.8;
+}
+.mdx-quote figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  font-style: normal;
+  color: var(--text-muted);
+}
+
+.mdx-checklist {
+  margin: 28px 0;
+  padding: 20px 22px;
+  border-radius: 12px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  list-style: none;
+}
+.mdx-checklist li {
+  position: relative;
+  padding-left: 26px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.mdx-checklist li:last-child {
+  margin-bottom: 0;
+}
+.mdx-checklist li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--point-2);
+  font-weight: 700;
+}
+
+.mdx-doctor-comment {
+  margin: 28px 0;
+  padding: 20px 22px;
+  border-radius: 12px;
+  background: var(--brand);
+  color: #fff;
+}
+.mdx-doctor-comment-name {
+  margin: 0 0 8px;
+  font-weight: 700;
+  color: var(--point-2);
+  font-size: 14px;
+}
+.mdx-doctor-comment-body {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.mdx-cta {
+  margin: 36px 0;
+  text-align: center;
+}
+
+/* Related treatments / tags / author bio / related articles (stage 4-4) */
+.column-related-treatments,
+.column-tag-list,
+.column-author-bio,
+.column-related-articles {
+  max-width: 720px;
+  margin: 0 auto 48px;
+}
+.column-related-treatments h2,
+.column-author-bio h2,
+.column-related-articles h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 16px;
+}
+.column-related-treatments ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.column-related-treatments a {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.column-related-treatments a:hover {
+  background: var(--point-soft);
+}
+
+.column-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.column-author-bio-card {
+  display: flex;
+  gap: 20px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+}
+.column-author-bio-image {
+  flex: none;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.column-author-bio-name {
+  margin: 0;
+  font-weight: 700;
+  color: var(--brand);
+  font-size: 16px;
+}
+.column-author-bio-job-title {
+  margin: 2px 0 10px;
+  font-size: 13px;
+  color: var(--point-2);
+}
+.column-author-bio-text {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.column-author-bio-specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.column-author-bio-specialties li {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+}
+.column-author-bio-link {
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.column-related-articles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 960px) {
+  .column-detail-layout {
+    grid-template-columns: 1fr;
+  }
+  .column-toc {
+    position: static;
+  }
+  .column-related-articles-grid {
+    grid-template-columns: 1fr;
+  }
+}
 @media (max-width: 768px) {
   .column-detail {
     padding: 64px 0 80px;
+  }
+  .column-author-bio-card {
+    flex-direction: column;
   }
 }
 

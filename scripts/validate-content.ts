@@ -20,7 +20,14 @@ import path from "node:path";
 import { createContentSource } from "../lib/content/loader";
 import { contentFrontmatterSchema } from "../lib/content/schemas";
 import type { ContentFrontmatterInput, ContentFrontmatterOutput } from "../lib/content/schemas";
-import { checkAuthorReferences, columnSource, validateColumnAuthorReferences } from "../lib/content/sources/columns";
+import {
+  checkAuthorReferences,
+  checkRelatedTreatmentSlugs,
+  columnSource,
+  validateColumnAuthorReferences,
+  validateColumnRelatedTreatmentSlugs,
+} from "../lib/content/sources/columns";
+import { TREATMENT_ANCHORS } from "../lib/treatmentAnchors";
 import { authorSource } from "../lib/content/sources/authors";
 import type { ContentTypeConfig } from "../lib/content/registry";
 import type { ColumnEntry } from "../lib/content/types";
@@ -132,6 +139,9 @@ check("getFeatured() only returns published + featured entries", () => {
 check("real columns' authorSlug/reviewedBySlug all resolve to a real author", () => {
   validateColumnAuthorReferences();
 });
+check("real columns' relatedTreatmentSlugs all resolve to a real /treatment anchor", () => {
+  validateColumnRelatedTreatmentSlugs();
+});
 
 console.log("\nreal content/authors:");
 check("authorSource loads kim-jongwook", () => {
@@ -191,6 +201,30 @@ expectThrow("a column referencing a nonexistent authorSlug throws", () => {
     filePath: "(fixture, no file on disk)",
   };
   checkAuthorReferences([fakeEntry], new Set(["kim-jongwook"]));
+});
+
+console.log("\nfixture: related-treatment reference integrity");
+expectThrow("a column referencing a nonexistent relatedTreatmentSlugs entry throws", () => {
+  const fakeEntry: ColumnEntry = {
+    frontmatter: {
+      title: "픽스처",
+      slug: "fixture",
+      summary: "픽스처",
+      description: "픽스처",
+      publishedAt: "2026-01-01",
+      authorSlug: "kim-jongwook",
+      category: "general",
+      tags: [],
+      thumbnail: "/images/consult.png",
+      relatedTreatmentSlugs: ["no-such-treatment"],
+      featured: false,
+      draft: false,
+    },
+    content: "## 소제목\n\n본문",
+    readingTimeMinutes: 1,
+    filePath: "(fixture, no file on disk)",
+  };
+  checkRelatedTreatmentSlugs([fakeEntry], new Set(Object.keys(TREATMENT_ANCHORS)));
 });
 
 console.log("\nfixture: invalid frontmatter");

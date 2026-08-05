@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import readingTime from "reading-time";
 import type { ContentTypeConfig } from "./registry";
 import { assertNoH1Heading } from "./mdxGuards";
 import type { ContentEntry, ContentFrontmatterBase, SimpleEntry } from "./types";
+import { estimateReadingTimeMinutes } from "../readingTime";
 
 /**
  * The only file in the codebase that touches the filesystem for content.
@@ -150,7 +150,7 @@ export function createContentSource<T extends ContentFrontmatterBase, TIn = T>(
       frontmatter: entry.frontmatter,
       content: entry.content,
       filePath: entry.filePath,
-      readingTimeMinutes: Math.max(1, Math.ceil(readingTime(entry.content).minutes)),
+      readingTimeMinutes: estimateReadingTimeMinutes(entry.content),
     }));
 
     if (config.sort?.by === "publishedAt") {

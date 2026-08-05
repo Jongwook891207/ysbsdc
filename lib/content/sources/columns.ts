@@ -2,6 +2,7 @@ import { createContentSource } from "@/lib/content/loader";
 import { COLUMN_CONFIG } from "@/lib/content/registry";
 import type { ColumnEntry } from "@/lib/content/types";
 import { authorSource } from "./authors";
+import { TREATMENT_ANCHORS } from "@/lib/treatmentAnchors";
 
 /**
  * The only column data-access entry point pages should import from
@@ -55,4 +56,27 @@ export function checkAuthorReferences(entries: ColumnEntry[], knownAuthorSlugs: 
  */
 export function validateColumnAuthorReferences(): void {
   checkAuthorReferences(columnSource.getAll(), new Set(authorSource.getAllSlugs()));
+}
+
+/**
+ * Mirrors checkAuthorReferences above: a column's `relatedTreatmentSlugs`
+ * must resolve against the real `/treatment` anchors (lib/treatmentAnchors.ts),
+ * checked explicitly here rather than silently filtered at render time —
+ * RelatedTreatmentLinks.tsx also throws on an unmappable slug, but this
+ * check runs at `npm run validate:content` time, before a build.
+ */
+export function checkRelatedTreatmentSlugs(entries: ColumnEntry[], knownTreatmentSlugs: Set<string>): void {
+  for (const entry of entries) {
+    for (const slug of entry.frontmatter.relatedTreatmentSlugs ?? []) {
+      if (!knownTreatmentSlugs.has(slug)) {
+        throw new Error(
+          `${entry.filePath}: relatedTreatmentSlugs "${slug}" does not match any entry in lib/treatmentAnchors.ts.`,
+        );
+      }
+    }
+  }
+}
+
+export function validateColumnRelatedTreatmentSlugs(): void {
+  checkRelatedTreatmentSlugs(columnSource.getAll(), new Set(Object.keys(TREATMENT_ANCHORS)));
 }
