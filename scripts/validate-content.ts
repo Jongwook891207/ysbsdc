@@ -136,16 +136,25 @@ console.log("real content/columns:");
 check("getPublished() excludes both draft samples", () => {
   const published = columnSource.getPublished();
   const slugs = published.map((entry) => entry.frontmatter.slug).sort();
-  const expected = ["why-we-recommend-second-opinions", "wisdom-tooth-extraction-anxiety"].sort();
-  assert(published.length === 2, `expected 2 published entries, got ${published.length}`);
+  const expected = [
+    "why-we-recommend-second-opinions",
+    "wisdom-tooth-extraction-anxiety",
+    "dental-implant-diabetes-hypertension",
+  ].sort();
+  assert(published.length === 3, `expected 3 published entries, got ${published.length}`);
   assert(
     slugs.join(",") === expected.join(","),
     `expected [${expected.join(", ")}], got [${slugs.join(", ")}]`,
   );
 });
-check("getAll() includes both draft samples plus both published real columns", () => {
+check("getAll() includes both draft samples plus all three published real columns", () => {
   const all = columnSource.getAll();
-  assert(all.length === 4, `expected 4 total entries (2 published + 2 draft samples), got ${all.length}`);
+  assert(all.length === 5, `expected 5 total entries (3 published + 2 draft samples), got ${all.length}`);
+});
+check("dental-implant-diabetes-hypertension is published via /칼럼발행 (draft: false)", () => {
+  const column = columnSource.getBySlug("dental-implant-diabetes-hypertension");
+  assert(column !== null, "expected dental-implant-diabetes-hypertension to be loadable by slug");
+  assert(column?.frontmatter.draft === false, "expected dental-implant-diabetes-hypertension to be marked draft: false after publishing");
 });
 check("wisdom-tooth-extraction-anxiety is published via /칼럼발행 (draft: false)", () => {
   const column = columnSource.getBySlug("wisdom-tooth-extraction-anxiety");
