@@ -135,15 +135,22 @@ console.log("Content data layer validation\n");
 console.log("real content/columns:");
 check("getPublished() excludes both draft samples", () => {
   const published = columnSource.getPublished();
-  assert(published.length === 1, `expected 1 published entry, got ${published.length}`);
+  const slugs = published.map((entry) => entry.frontmatter.slug).sort();
+  const expected = ["why-we-recommend-second-opinions", "wisdom-tooth-extraction-anxiety"].sort();
+  assert(published.length === 2, `expected 2 published entries, got ${published.length}`);
   assert(
-    published[0]?.frontmatter.slug === "why-we-recommend-second-opinions",
-    "expected why-we-recommend-second-opinions to be the published one",
+    slugs.join(",") === expected.join(","),
+    `expected [${expected.join(", ")}], got [${slugs.join(", ")}]`,
   );
 });
-check("getAll() includes both draft samples", () => {
+check("getAll() includes both draft samples plus both published real columns", () => {
   const all = columnSource.getAll();
-  assert(all.length === 3, `expected 3 total entries (1 published + 2 draft samples), got ${all.length}`);
+  assert(all.length === 4, `expected 4 total entries (2 published + 2 draft samples), got ${all.length}`);
+});
+check("wisdom-tooth-extraction-anxiety is published via /칼럼발행 (draft: false)", () => {
+  const column = columnSource.getBySlug("wisdom-tooth-extraction-anxiety");
+  assert(column !== null, "expected wisdom-tooth-extraction-anxiety to be loadable by slug");
+  assert(column?.frontmatter.draft === false, "expected wisdom-tooth-extraction-anxiety to be marked draft: false after publishing");
 });
 check("getBySlug() can still load a draft directly", () => {
   const draft = columnSource.getBySlug("denture-care-basics");
@@ -165,8 +172,10 @@ check("getByCategory()/getByTag() only return published entries", () => {
   );
   assert(columnSource.getByCategory("implant").length === 0, "implant-guide is now a draft — getByCategory(\"implant\") should return 0");
   assert(columnSource.getByCategory("진료철학").length === 1, "expected 1 published entry in category \"진료철학\"");
+  assert(columnSource.getByCategory("일반진료").length === 1, "expected 1 published entry in category \"일반진료\"");
   assert(columnSource.getByTag("틀니").length === 0, "the only column tagged \"틀니\" is a draft — getByTag should return 0");
   assert(columnSource.getByTag("과잉진료").length === 1, "expected 1 published entry tagged \"과잉진료\"");
+  assert(columnSource.getByTag("사랑니").length === 1, "expected 1 published entry tagged \"사랑니\"");
 });
 check("getFeatured() only returns published + featured entries", () => {
   const featured = columnSource.getFeatured();
