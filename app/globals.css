@@ -3730,3 +3730,109 @@ body.modal-open {
     padding: 64px 0 40px;
   }
 }
+
+/* ==========================================================================
+   Column hub: category filter, featured section, pagination (stage 4-5).
+   All still scoped under .column-page — reuses .column-list-grid/.btn/etc.
+   from the block above, adds only what's new.
+   ========================================================================== */
+.column-page .column-category-filter ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 40px;
+  padding: 0;
+  list-style: none;
+}
+.column-page .column-category-filter a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.column-page .column-category-filter a:hover {
+  border-color: var(--point);
+  color: var(--brand);
+}
+.column-page .column-category-filter a[aria-current="page"] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+.column-page .column-category-count {
+  color: inherit;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.column-page .column-featured {
+  margin-bottom: 56px;
+}
+.column-page .column-featured-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 24px;
+}
+.column-page .column-featured-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.column-page .column-pagination {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+.column-page .column-pagination ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.column-page .column-pagination a,
+.column-page .column-pagination span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  color: var(--text-muted);
+}
+.column-page .column-pagination a {
+  border: 1px solid var(--line);
+  background: var(--card);
+}
+.column-page .column-pagination a:hover {
+  border-color: var(--point);
+  color: var(--brand);
+}
+.column-page .column-pagination span[aria-current="page"] {
+  background: var(--brand);
+  color: #fff;
+}
+.column-page .column-pagination span[aria-disabled="true"] {
+  color: var(--line);
+}
+
+@media (max-width: 960px) {
+  .column-page .column-featured-grid {
+    grid-template-columns: 1fr;
+  }
+}

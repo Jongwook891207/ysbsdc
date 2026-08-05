@@ -29,6 +29,9 @@ import {
 } from "../lib/content/sources/columns";
 import { TREATMENT_ANCHORS } from "../lib/treatmentAnchors";
 import { authorSource } from "../lib/content/sources/authors";
+import { paginate, parsePageParam } from "../lib/pagination";
+import { getCategoryCounts, getIndexableCategories, getTagCounts } from "../lib/taxonomy";
+import { getRelatedColumns } from "../lib/related";
 import type { ContentTypeConfig } from "../lib/content/registry";
 import type { ColumnEntry } from "../lib/content/types";
 
@@ -102,6 +105,29 @@ function validFrontmatter(overrides: Record<string, string> = {}): string {
   };
   const lines = Object.entries(base).map(([key, value]) => `${key}: "${value}"`);
   return `---\n${lines.join("\n")}\n---\n\n## 검증용 소제목\n\n검증용 본문입니다.\n`;
+}
+
+/** A minimal, valid ColumnEntry — override just the field(s) a test cares about. */
+function makeFixtureEntry(overrides: Partial<ColumnEntry["frontmatter"]> & { slug: string }): ColumnEntry {
+  const frontmatter: ColumnEntry["frontmatter"] = {
+    title: `픽스처 ${overrides.slug}`,
+    summary: "픽스처 요약",
+    description: "픽스처 설명",
+    publishedAt: "2026-01-01",
+    authorSlug: "kim-jongwook",
+    category: "general",
+    tags: [],
+    thumbnail: "/images/consult.png",
+    featured: false,
+    draft: false,
+    ...overrides,
+  };
+  return {
+    frontmatter,
+    content: "## 소제목\n\n본문",
+    readingTimeMinutes: 1,
+    filePath: `(fixture: ${overrides.slug})`,
+  };
 }
 
 console.log("Content data layer validation\n");
@@ -304,6 +330,118 @@ check("an H1-looking line inside a code fence does NOT throw (false-positive gua
       createContentSource(tempColumnConfig(dir)).getAll();
     },
   );
+});
+
+console.log("\nfixture: pagination");
+check("paginate() returns page 1 with the expected slice and flags", () => {
+  const items = Array.from({ length: 5 }, (_, i) => i);
+  const result = paginate(items, 1, 2);
+  assert(result !== null, "expected page 1 of 5 items (perPage 2) to be valid");
+  assert(JSON.stringify(result?.items) === JSON.stringify([0, 1]), `expected [0,1], got ${JSON.stringify(result?.items)}`);
+  assert(result?.totalPages === 3, `expected 3 total pages, got ${result?.totalPages}`);
+  assert(result?.hasPrevious === false, "page 1 must not have a previous page");
+  assert(result?.hasNext === true, "page 1 of 3 must have a next page");
+  assert(result?.previousPage === null, "page 1 previousPage must be null");
+  assert(result?.nextPage === 2, `expected nextPage 2, got ${result?.nextPage}`);
+});
+check("paginate() returns the last page correctly, including a partial slice", () => {
+  const items = Array.from({ length: 5 }, (_, i) => i);
+  const result = paginate(items, 3, 2);
+  assert(result !== null, "expected page 3 of 5 items (perPage 2) to be valid");
+  assert(JSON.stringify(result?.items) === JSON.stringify([4]), `expected [4], got ${JSON.stringify(result?.items)}`);
+  assert(result?.hasNext === false, "last page must not have a next page");
+  assert(result?.hasPrevious === true, "last page must have a previous page");
+  assert(result?.nextPage === null, "last page nextPage must be null");
+});
+check("paginate() returns null for a page beyond the last page", () => {
+  const items = Array.from({ length: 5 }, (_, i) => i);
+  assert(paginate(items, 4, 2) === null, "expected null for page 4 of only 3 total pages");
+});
+check("paginate() treats page 1 of an empty list as valid (empty items, 1 total page)", () => {
+  const result = paginate<number>([], 1, 12);
+  assert(result !== null, "expected page 1 of an empty list to be valid");
+  assert(result?.totalPages === 1, `expected 1 total page for an empty list, got ${result?.totalPages}`);
+  assert(result?.items.length === 0, "expected an empty items array");
+});
+check("paginate() returns null for page 0", () => {
+  assert(paginate([1, 2, 3], 0, 2) === null, "expected null for page 0");
+});
+
+console.log("\nfixture: page param parsing");
+check("parsePageParam() accepts clean positive integers", () => {
+  assert(parsePageParam("2") === 2, 'expected "2" to parse to 2');
+  assert(parsePageParam("15") === 15, 'expected "15" to parse to 15');
+});
+check("parsePageParam() rejects leading zeros, decimals, and non-numeric input", () => {
+  assert(parsePageParam("01") === null, 'expected "01" to be rejected');
+  assert(parsePageParam("1.5") === null, 'expected "1.5" to be rejected');
+  assert(parsePageParam("abc") === null, 'expected "abc" to be rejected');
+  assert(parsePageParam("-1") === null, 'expected "-1" to be rejected');
+  assert(parsePageParam("0") === null, 'expected "0" to be rejected');
+});
+
+console.log("\nfixture: taxonomy (category/tag aggregation)");
+check("getCategoryCounts() counts every entry exactly once across categories", () => {
+  const entries = [
+    makeFixtureEntry({ slug: "a", category: "implant" }),
+    makeFixtureEntry({ slug: "b", category: "implant" }),
+    makeFixtureEntry({ slug: "c", category: "denture" }),
+    makeFixtureEntry({ slug: "d", category: "general" }),
+    makeFixtureEntry({ slug: "e", category: "general" }),
+  ];
+  const counts = getCategoryCounts(entries);
+  const total = counts.reduce((sum, c) => sum + c.count, 0);
+  assert(total === entries.length, `expected counts to sum to ${entries.length}, got ${total}`);
+  assert(counts[0]?.count === 2, `expected the most-populous category to have count 2, got ${counts[0]?.count}`);
+});
+check("getIndexableCategories() only returns categories at/above MIN_PUBLIC_CATEGORY_COUNT", () => {
+  const entries = [
+    makeFixtureEntry({ slug: "a", category: "implant" }),
+    makeFixtureEntry({ slug: "b", category: "implant" }),
+    makeFixtureEntry({ slug: "c", category: "implant" }),
+    makeFixtureEntry({ slug: "d", category: "denture" }),
+  ];
+  const indexable = getIndexableCategories(entries);
+  assert(
+    indexable.length === 1 && indexable[0]?.category === "implant",
+    `expected only "implant" (count 3) to be indexable, got ${JSON.stringify(indexable)}`,
+  );
+});
+check("getTagCounts() counts tags across entries", () => {
+  const entries = [
+    makeFixtureEntry({ slug: "a", tags: ["임플란트", "가이드"] }),
+    makeFixtureEntry({ slug: "b", tags: ["임플란트"] }),
+  ];
+  const counts = getTagCounts(entries);
+  const implantCount = counts.find((t) => t.tag === "임플란트")?.count;
+  assert(implantCount === 2, `expected "임플란트" tag count 2, got ${implantCount}`);
+});
+
+console.log("\nfixture: related-article scoring");
+check("getRelatedColumns() excludes self, weights category over tags, and excludes score-0 results", () => {
+  const current = makeFixtureEntry({ slug: "current", category: "implant", tags: ["가이드"], publishedAt: "2026-03-01" });
+  const sameCategory = makeFixtureEntry({ slug: "same-category", category: "implant", tags: [], publishedAt: "2026-01-01" });
+  const sameTagOnly = makeFixtureEntry({ slug: "same-tag-only", category: "denture", tags: ["가이드"], publishedAt: "2026-01-01" });
+  const unrelated = makeFixtureEntry({ slug: "unrelated", category: "general", tags: ["다른태그"], publishedAt: "2026-05-01" });
+
+  const related = getRelatedColumns(current, [current, sameCategory, sameTagOnly, unrelated]);
+  const slugs = related.map((c) => c.frontmatter.slug);
+  assert(!slugs.includes("current"), "related results must never include the current article itself");
+  assert(!slugs.includes("unrelated"), "an article with score 0 (no shared category or tag) must be excluded");
+  assert(slugs[0] === "same-category", `expected same-category article to rank first, got order [${slugs.join(", ")}]`);
+});
+check("getRelatedColumns() caps results at 3", () => {
+  const current = makeFixtureEntry({ slug: "current", category: "implant" });
+  const candidates = [
+    current,
+    ...Array.from({ length: 5 }, (_, i) => makeFixtureEntry({ slug: `related-${i}`, category: "implant" })),
+  ];
+  assert(getRelatedColumns(current, candidates).length === 3, "expected at most 3 related results");
+});
+check("getRelatedColumns() returns an empty array when nothing shares category/tags", () => {
+  const current = makeFixtureEntry({ slug: "current", category: "implant", tags: [] });
+  const candidates = [makeFixtureEntry({ slug: "other", category: "denture", tags: ["틀니"] })];
+  assert(getRelatedColumns(current, candidates).length === 0, "expected no related results");
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

@@ -19,6 +19,16 @@ import { TREATMENT_ANCHORS } from "@/lib/treatmentAnchors";
 export const columnSource = createContentSource(COLUMN_CONFIG);
 
 /**
+ * `COLUMN_CONFIG.pageSize` is `number | undefined` at the type level
+ * (registry.ts — some content types, like author, have no listing/
+ * pagination concept and omit it), even though the column config always
+ * sets it. Resolving the fallback once here means every page/sitemap that
+ * needs "how many columns per page" reads one constant instead of
+ * repeating `?? 12` at each call site.
+ */
+export const COLUMN_PAGE_SIZE = COLUMN_CONFIG.pageSize ?? 12;
+
+/**
  * Pure check, separated from validateColumnAuthorReferences() below so
  * scripts/validate-content.ts can test the failure case directly with
  * fixture data instead of needing to write a bad file into the real
