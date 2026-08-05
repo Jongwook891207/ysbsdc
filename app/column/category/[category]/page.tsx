@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ColumnListingView } from "@/components/content/ColumnListingView";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
 import { getCategoryCounts, MIN_PUBLIC_CATEGORY_COUNT } from "@/lib/taxonomy";
 import { paginate } from "@/lib/pagination";
-import { SITE_NAME } from "@/lib/seo";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildColumnCollectionJsonLd, buildGraph } from "@/lib/jsonld";
 
 /**
  * generateStaticParams uses the raw (undecoded) category string as the
@@ -66,20 +68,36 @@ export default async function ColumnCategoryPage({ params }: { params: Promise<{
   // Page 1 of a non-empty (match found ⇒ count ≥ 1) list is always valid.
   const pagination = paginate(entries, 1, COLUMN_PAGE_SIZE)!;
 
+  const canonicalUrl = absoluteUrl(`/column/category/${encodeURIComponent(category)}`);
+  const breadcrumbItems = [
+    { label: "홈", href: "/" },
+    { label: "원장 칼럼", href: "/column" },
+    { label: `${category} 칼럼`, href: `/column/category/${encodeURIComponent(category)}` },
+  ];
+  const collection = buildColumnCollectionJsonLd({
+    canonicalUrl,
+    name: `${category} 칼럼`,
+    columns: pagination.items.map((c) => c.frontmatter),
+  });
+  const graph = buildGraph(
+    [buildBreadcrumbJsonLd(breadcrumbItems, canonicalUrl), collection].filter(
+      (entity): entity is Record<string, unknown> => entity !== null,
+    ),
+  );
+
   return (
-    <ColumnListingView
-      eyebrow="카테고리"
-      title={`${category} 칼럼`}
-      breadcrumbItems={[
-        { label: "홈", href: "/" },
-        { label: "원장 칼럼", href: "/column" },
-        { label: `${category} 칼럼`, href: `/column/category/${encodeURIComponent(category)}` },
-      ]}
-      categories={categories}
-      activeCategory={category}
-      pagination={pagination}
-      basePath={`/column/category/${encodeURIComponent(category)}`}
-      emptyMessage="아직 등록된 글이 없습니다."
-    />
+    <>
+      <JsonLd data={graph} />
+      <ColumnListingView
+        eyebrow="카테고리"
+        title={`${category} 칼럼`}
+        breadcrumbItems={breadcrumbItems}
+        categories={categories}
+        activeCategory={category}
+        pagination={pagination}
+        basePath={`/column/category/${encodeURIComponent(category)}`}
+        emptyMessage="아직 등록된 글이 없습니다."
+      />
+    </>
   );
 }

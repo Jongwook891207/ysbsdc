@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { ColumnListingView } from "@/components/content/ColumnListingView";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
 import { getCategoryCounts } from "@/lib/taxonomy";
 import { paginate, parsePageParam } from "@/lib/pagination";
-import { SITE_NAME } from "@/lib/seo";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo";
+import { buildColumnCollectionJsonLd, buildGraph } from "@/lib/jsonld";
 
 const SEO_DESCRIPTION =
   "부천 오정구 원종동·고강동 연세백세치과의원 김종욱 원장이 직접 쓰는 치과 지식 칼럼. 임플란트, 틀니, 신경치료 등 진료 관련 궁금증을 알기 쉽게 설명합니다.";
@@ -63,14 +65,24 @@ export default async function ColumnListPagedPage({ params }: { params: Promise<
 
   const categories = getCategoryCounts(published);
 
+  const collection = buildColumnCollectionJsonLd({
+    canonicalUrl: absoluteUrl(`/column/page/${page}`),
+    name: `원장 칼럼 ${page}페이지`,
+    columns: pagination.items.map((c) => c.frontmatter),
+  });
+  const graph = collection ? buildGraph([collection]) : null;
+
   return (
-    <ColumnListingView
-      eyebrow="콘텐츠"
-      title="김종욱 원장의 치과 칼럼"
-      categories={categories}
-      pagination={pagination}
-      basePath="/column"
-      emptyMessage="아직 등록된 칼럼이 없습니다."
-    />
+    <>
+      {graph && <JsonLd data={graph} />}
+      <ColumnListingView
+        eyebrow="콘텐츠"
+        title="김종욱 원장의 치과 칼럼"
+        categories={categories}
+        pagination={pagination}
+        basePath="/column"
+        emptyMessage="아직 등록된 칼럼이 없습니다."
+      />
+    </>
   );
 }

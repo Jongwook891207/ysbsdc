@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { ColumnListingView } from "@/components/content/ColumnListingView";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
 import { getCategoryCounts } from "@/lib/taxonomy";
 import { paginate } from "@/lib/pagination";
-import { SITE_NAME } from "@/lib/seo";
+import { absoluteUrl, SITE_NAME } from "@/lib/seo";
+import { buildColumnCollectionJsonLd, buildGraph } from "@/lib/jsonld";
 
 const SEO_TITLE = "원장 칼럼 - 연세백세치과의원";
 const SEO_DESCRIPTION =
@@ -20,9 +22,12 @@ const MAX_FEATURED = 3;
  * (this route stays page 1 rather than redirecting into itself, matching
  * the "/column/page/1 doesn't exist" URL policy — /column IS page 1).
  *
- * Article JSON-LD doesn't belong on a list page; a CollectionPage/ItemList
- * entity is a reasonable candidate here but is deferred to the SEO stage
- * per this stage's scope, same as every other page's JSON-LD so far.
+ * Stage 5-1: CollectionPage/ItemList added (see lib/jsonld.ts's
+ * buildColumnCollectionJsonLd) — built from exactly the entries this page
+ * shows (this page's `pagination.items`), never a re-fetch. No
+ * BreadcrumbList here — see the stage 4-6 note on ColumnListingView for
+ * why /column itself (unlike its category pages) doesn't render a visible
+ * Breadcrumb, and this stage requires JSON-LD to match the visible trail.
  */
 export const metadata: Metadata = {
   title: SEO_TITLE,
@@ -61,16 +66,26 @@ export default function ColumnListPage() {
   // lib/pagination.ts — so this non-null assertion is safe here.
   const pagination = paginate(published, 1, COLUMN_PAGE_SIZE)!;
 
+  const collection = buildColumnCollectionJsonLd({
+    canonicalUrl: absoluteUrl("/column"),
+    name: SEO_TITLE,
+    columns: pagination.items.map((c) => c.frontmatter),
+  });
+  const graph = collection ? buildGraph([collection]) : null;
+
   return (
-    <ColumnListingView
-      eyebrow="콘텐츠"
-      title="김종욱 원장의 치과 칼럼"
-      description="과잉진료 걱정 없이 치료를 결정하실 수 있도록, 진료 원칙과 치료 과정을 원장이 직접 설명해 드립니다."
-      categories={categories}
-      featured={featured}
-      pagination={pagination}
-      basePath="/column"
-      emptyMessage="아직 등록된 칼럼이 없습니다. 곧 새로운 글로 찾아뵙겠습니다."
-    />
+    <>
+      {graph && <JsonLd data={graph} />}
+      <ColumnListingView
+        eyebrow="콘텐츠"
+        title="김종욱 원장의 치과 칼럼"
+        description="과잉진료 걱정 없이 치료를 결정하실 수 있도록, 진료 원칙과 치료 과정을 원장이 직접 설명해 드립니다."
+        categories={categories}
+        featured={featured}
+        pagination={pagination}
+        basePath="/column"
+        emptyMessage="아직 등록된 칼럼이 없습니다. 곧 새로운 글로 찾아뵙겠습니다."
+      />
+    </>
   );
 }

@@ -7,7 +7,7 @@ import { DoctorTeaserSection } from "@/components/sections/home/DoctorTeaserSect
 import { ColumnTeaserSection } from "@/components/sections/home/ColumnTeaserSection";
 import { LocationSection } from "@/components/sections/home/LocationSection";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { buildDentistJsonLd, buildFaqJsonLd, buildGraph } from "@/lib/jsonld";
+import { buildDentistJsonLd, buildFaqJsonLd, buildGraph, buildWebSiteJsonLd } from "@/lib/jsonld";
 import { HOME_FAQ_ITEMS } from "@/lib/homeFaq";
 import { SITE_NAME, SITE_URL } from "@/lib/seo";
 
@@ -81,7 +81,11 @@ export const metadata: Metadata = {
   },
 };
 
-const homeJsonLd = buildGraph([buildDentistJsonLd(), buildFaqJsonLd(HOME_FAQ_ITEMS, CANONICAL_URL)]);
+const homeJsonLd = buildGraph([
+  buildDentistJsonLd(),
+  buildWebSiteJsonLd(),
+  buildFaqJsonLd(HOME_FAQ_ITEMS, CANONICAL_URL),
+]);
 
 export default function HomePage() {
   return (

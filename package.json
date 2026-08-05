@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "validate:content": "tsx scripts/validate-content.ts"
+    "validate:content": "tsx scripts/validate-content.ts",
+    "validate:seo": "tsx scripts/validate-seo.ts"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

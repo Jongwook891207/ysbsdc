@@ -10,11 +10,13 @@ import { TagList } from "@/components/content/TagList";
 import { RelatedTreatmentLinks } from "@/components/content/RelatedTreatmentLinks";
 import { RelatedArticles } from "@/components/content/RelatedArticles";
 import { CTA } from "@/components/content/mdx/CTA";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { columnSource } from "@/lib/content/sources/columns";
 import { authorSource } from "@/lib/content/sources/authors";
 import { extractToc } from "@/lib/toc";
 import { getRelatedColumns } from "@/lib/related";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
+import { buildArticleJsonLd, buildBreadcrumbJsonLd, buildFaqJsonLd, buildGraph } from "@/lib/jsonld";
 
 /**
  * Stage 4-4: the full column detail template. Nothing here re-implements
@@ -64,6 +66,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       publishedTime: frontmatter.publishedAt,
       modifiedTime: frontmatter.updatedAt ?? frontmatter.publishedAt,
       authors: author ? [author.frontmatter.name] : undefined,
+      section: frontmatter.category,
+      tags: frontmatter.tags.length > 0 ? frontmatter.tags : undefined,
     },
     twitter: {
       card: "summary_large_image",
@@ -89,20 +93,35 @@ export default async function ColumnDetailPage({ params }: { params: Promise<{ s
   const tocItems = extractToc(column.content);
   const relatedColumns = getRelatedColumns(column, columnSource.getPublished());
 
+  const canonicalUrl = absoluteUrl(`/column/${frontmatter.slug}`);
+  const breadcrumbItems = [
+    { label: "홈", href: "/" },
+    { label: "원장 칼럼", href: "/column" },
+    {
+      label: `${frontmatter.category} 칼럼`,
+      href: `/column/category/${encodeURIComponent(frontmatter.category)}`,
+    },
+    { label: frontmatter.title, href: `/column/${frontmatter.slug}` },
+  ];
+
+  const graph = buildGraph(
+    [
+      buildArticleJsonLd({
+        column: frontmatter,
+        author: author.frontmatter,
+        reviewer: reviewer?.frontmatter ?? null,
+        canonicalUrl,
+      }),
+      buildBreadcrumbJsonLd(breadcrumbItems, canonicalUrl),
+      frontmatter.faq && frontmatter.faq.length > 0 ? buildFaqJsonLd(frontmatter.faq, canonicalUrl) : null,
+    ].filter((entity): entity is Record<string, unknown> => entity !== null),
+  );
+
   return (
     <article className="column-detail">
+      <JsonLd data={graph} />
       <div className="container">
-        <Breadcrumb
-          items={[
-            { label: "홈", href: "/" },
-            { label: "원장 칼럼", href: "/column" },
-            {
-              label: `${frontmatter.category} 칼럼`,
-              href: `/column/category/${encodeURIComponent(frontmatter.category)}`,
-            },
-            { label: frontmatter.title, href: `/column/${frontmatter.slug}` },
-          ]}
-        />
+        <Breadcrumb items={breadcrumbItems} />
 
         <ArticleHeader column={column} readingTimeMinutes={column.readingTimeMinutes} />
 

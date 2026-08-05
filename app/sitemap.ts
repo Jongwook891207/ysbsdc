@@ -1,13 +1,21 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
+import { authorSource } from "@/lib/content/sources/authors";
 import { getIndexableCategories } from "@/lib/taxonomy";
 import type { ColumnEntry } from "@/lib/content/types";
 
 /**
  * Stage 4-5: extended from the stage-1 static-only placeholder to include
- * real column content. Deliberately still doesn't include /doctor/[slug] —
- * that route isn't part of this stage's scope (only /column's hub is).
+ * real column content. Stage 5-1: added /doctor/[slug] (now a real page),
+ * and fixed `lastModified` — every entry used to get `new Date()` on
+ * every build/request, which claimed the entire site changed on every
+ * deploy regardless of whether anything actually did. Static pages with
+ * no real "last modified" data source (/, /doctor, /treatment, /mission,
+ * /column hub, pagination/category listing pages — their content is
+ * whatever the underlying articles are, not a dated entity itself) now
+ * omit `lastModified` entirely rather than guess. Only `/column/[slug]`
+ * entries get a real one, from the article's own `updatedAt ?? publishedAt`.
  *
  * Excluded on purpose:
  *  - draft columns (never in columnSource.getPublished())
@@ -15,18 +23,28 @@ import type { ColumnEntry } from "@/lib/content/types";
  *  - category pages under lib/taxonomy.ts's MIN_PUBLIC_CATEGORY_COUNT
  *    (they exist and render, but carry `robots: noindex` — a sitemap
  *    entry for a noindex page is a contradiction search engines flag)
+ *  - inactive authors (authorSource entries with `active: false`,
+ *    matching /doctor/[slug]'s own notFound()/noindex policy)
+ *
+ * No query-param or preview/admin/deployment-specific URLs exist anywhere
+ * in this app to accidentally include — nothing here reads request
+ * headers or `VERCEL_URL`; every URL is built from the fixed `SITE_URL`
+ * constant (lib/seo.ts) plus real content slugs.
  */
 function lastModifiedOf(entry: ColumnEntry): Date {
   return new Date(entry.frontmatter.updatedAt ?? entry.frontmatter.publishedAt);
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   const staticRoutes = ["", "/doctor", "/treatment", "/mission", "/column"];
   const entries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: `${SITE_URL}${route}`,
-    lastModified: now,
   }));
+
+  for (const author of authorSource.getAll()) {
+    if (!author.frontmatter.active) continue;
+    entries.push({ url: `${SITE_URL}/doctor/${author.frontmatter.slug}` });
+  }
 
   const published = columnSource.getPublished();
 
@@ -39,16 +57,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const totalPages = Math.max(1, Math.ceil(published.length / COLUMN_PAGE_SIZE));
   for (let page = 2; page <= totalPages; page++) {
-    entries.push({ url: `${SITE_URL}/column/page/${page}`, lastModified: now });
+    entries.push({ url: `${SITE_URL}/column/page/${page}` });
   }
 
   for (const { category } of getIndexableCategories(published)) {
     const encodedCategory = encodeURIComponent(category);
-    entries.push({ url: `${SITE_URL}/column/category/${encodedCategory}`, lastModified: now });
+    entries.push({ url: `${SITE_URL}/column/category/${encodedCategory}` });
 
     const categoryTotalPages = Math.max(1, Math.ceil(columnSource.getByCategory(category).length / COLUMN_PAGE_SIZE));
     for (let page = 2; page <= categoryTotalPages; page++) {
-      entries.push({ url: `${SITE_URL}/column/category/${encodedCategory}/page/${page}`, lastModified: now });
+      entries.push({ url: `${SITE_URL}/column/category/${encodedCategory}/page/${page}` });
     }
   }
 
