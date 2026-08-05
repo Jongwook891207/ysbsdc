@@ -70,6 +70,11 @@ export default async function ColumnCategoryPage({ params }: { params: Promise<{
     <ColumnListingView
       eyebrow="카테고리"
       title={`${category} 칼럼`}
+      breadcrumbItems={[
+        { label: "홈", href: "/" },
+        { label: "원장 칼럼", href: "/column" },
+        { label: `${category} 칼럼`, href: `/column/category/${encodeURIComponent(category)}` },
+      ]}
       categories={categories}
       activeCategory={category}
       pagination={pagination}

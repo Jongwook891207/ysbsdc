@@ -146,6 +146,7 @@ export function MobileNav() {
                 className="mobile-nav-trigger"
                 aria-expanded={isOpen}
                 aria-controls={`mobile-accordion-${index}`}
+                aria-current={dropdown.href && isNavActive(pathname, dropdown.href) ? "page" : undefined}
                 onClick={() => setOpenAccordion((current) => (current === index ? null : index))}
               >
                 {dropdown.label}
@@ -158,6 +159,7 @@ export function MobileNav() {
                     key={item.href}
                     href={item.href}
                     className={item.divider ? "dd-divider" : undefined}
+                    aria-current={isNavActive(pathname, item.href) ? "page" : undefined}
                     onClick={handleAnchorClick(item.href) ?? handleClose}
                   >
                     {item.highlight ? (

@@ -96,6 +96,10 @@ export default async function ColumnDetailPage({ params }: { params: Promise<{ s
           items={[
             { label: "홈", href: "/" },
             { label: "원장 칼럼", href: "/column" },
+            {
+              label: `${frontmatter.category} 칼럼`,
+              href: `/column/category/${encodeURIComponent(frontmatter.category)}`,
+            },
             { label: frontmatter.title, href: `/column/${frontmatter.slug}` },
           ]}
         />

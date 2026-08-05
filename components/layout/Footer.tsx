@@ -1,6 +1,14 @@
+import Link from "next/link";
 import { CLINIC } from "@/lib/seo";
 
-/** Ports the shared `<footer>` from index.html / doctor.html / treatment.html / mission.html. */
+/**
+ * Ports the shared `<footer>` from index.html / doctor.html / treatment.html
+ * / mission.html. Stage 4-6 adds one "바로가기" block with a link to
+ * /column — the original static footer had no column link at all (the
+ * column feature didn't exist yet); `.footer-grid` is already a wrapping
+ * flexbox (`display:flex; flex-wrap:wrap`), so a 4th item needs no CSS
+ * changes to fit.
+ */
 export function Footer() {
   return (
     <footer>
@@ -33,6 +41,12 @@ export function Footer() {
             {CLINIC.directions}
             <br />
             {CLINIC.parking}
+          </div>
+          <div>
+            <div className="fname">바로가기</div>
+            <Link href="/column" className="footer-link">
+              원장 칼럼 보기
+            </Link>
           </div>
         </div>
         <div className="footer-copy">© 2026 {CLINIC.name}. All rights reserved.</div>

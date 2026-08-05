@@ -56,8 +56,8 @@ export const NAV_ENTRIES: NavEntry[] = [
     type: "dropdown",
     dropdown: {
       label: "콘텐츠",
-      href: "/#column",
-      items: [{ label: "원장 칼럼", href: "/#column" }],
+      href: "/column",
+      items: [{ label: "원장 칼럼", href: "/column" }],
     },
   },
   {

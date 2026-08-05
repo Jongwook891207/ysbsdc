@@ -90,6 +90,7 @@ export function DesktopNav() {
                     href={item.href}
                     role="menuitem"
                     className={item.divider ? "dd-divider" : undefined}
+                    aria-current={isNavActive(pathname, item.href) ? "page" : undefined}
                     onClick={handleAnchorClick(item.href)}
                   >
                     <span className="dd-label">
@@ -102,7 +103,12 @@ export function DesktopNav() {
                 <ul className="dropdown-list">
                   {dropdown.items.map((item) => (
                     <li key={item.href}>
-                      <Link href={item.href} role="menuitem" onClick={handleAnchorClick(item.href)}>
+                      <Link
+                        href={item.href}
+                        role="menuitem"
+                        aria-current={isNavActive(pathname, item.href) ? "page" : undefined}
+                        onClick={handleAnchorClick(item.href)}
+                      >
                         {item.label}
                       </Link>
                     </li>

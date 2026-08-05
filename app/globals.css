@@ -242,6 +242,10 @@ nav.gnb-menu {
 nav.gnb-menu a:hover {
   color: var(--point-2);
 }
+nav.gnb-menu a[aria-current="page"] {
+  color: var(--point-2);
+  font-weight: 800;
+}
 .gnb-actions {
   display: flex;
   align-items: center;
@@ -333,6 +337,9 @@ nav.gnb-menu a:hover {
 .dropdown-panel a:hover {
   background: #f8f9fa;
 }
+.dropdown-panel a[aria-current="page"] {
+  background: var(--point-soft);
+}
 .dd-label::before {
   content: "•";
   color: var(--point-2);
@@ -416,6 +423,11 @@ nav.gnb-menu a:hover {
     cursor: pointer;
     font-family: inherit;
   }
+  .mobile-nav > a[aria-current="page"],
+  .mobile-nav-trigger[aria-current="page"] {
+    color: var(--point-2);
+    font-weight: 800;
+  }
   .mobile-chev {
     width: 8px;
     height: 8px;
@@ -448,6 +460,11 @@ nav.gnb-menu a:hover {
   }
   .mobile-accordion a:hover {
     background: #f8f9fa;
+  }
+  .mobile-accordion a[aria-current="page"] {
+    background: var(--point-soft);
+    color: var(--brand);
+    font-weight: 700;
   }
   .mobile-accordion .dd-group-label {
     padding: 10px 24px 0;
@@ -522,6 +539,13 @@ footer {
   font-weight: 700;
   font-size: 15px;
   margin-bottom: 8px;
+}
+.footer-link {
+  color: var(--point-2);
+  text-decoration: underline;
+}
+.footer-link:hover {
+  color: #fff;
 }
 .footer-copy {
   text-align: center;
@@ -3111,11 +3135,13 @@ body.modal-open {
 .column-detail {
   padding: 96px 0 120px;
 }
-.column-detail .breadcrumb {
+.column-detail .breadcrumb,
+.column-page .breadcrumb {
   max-width: 720px;
   margin: 0 auto 32px;
 }
-.column-detail .breadcrumb ol {
+.column-detail .breadcrumb ol,
+.column-page .breadcrumb ol {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3126,20 +3152,24 @@ body.modal-open {
   font-size: 13px;
   color: var(--text-muted);
 }
-.column-detail .breadcrumb li + li::before {
+.column-detail .breadcrumb li + li::before,
+.column-page .breadcrumb li + li::before {
   content: "/";
   margin-right: 6px;
   color: var(--line);
 }
-.column-detail .breadcrumb a {
+.column-detail .breadcrumb a,
+.column-page .breadcrumb a {
   color: var(--text-muted);
   text-decoration: none;
 }
-.column-detail .breadcrumb a:hover {
+.column-detail .breadcrumb a:hover,
+.column-page .breadcrumb a:hover {
   color: var(--brand);
   text-decoration: underline;
 }
-.column-detail .breadcrumb li[aria-current="page"] {
+.column-detail .breadcrumb li[aria-current="page"],
+.column-page .breadcrumb li[aria-current="page"] {
   color: var(--brand);
   font-weight: 600;
   /* Long titles shouldn't stretch the breadcrumb row — truncate instead. */
@@ -3834,5 +3864,47 @@ body.modal-open {
 @media (max-width: 960px) {
   .column-page .column-featured-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   404 page (stage 4-6) — app/not-found.tsx. No legacy static-HTML page
+   existed for this, so a fresh, non-colliding namespace like /column's.
+   ========================================================================== */
+.not-found-page {
+  padding: 140px 0;
+  text-align: center;
+}
+.not-found-page .container {
+  max-width: 560px;
+}
+.not-found-eyebrow {
+  color: var(--point-2);
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  margin: 0 0 12px;
+}
+.not-found-page h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--brand);
+  margin: 0 0 16px;
+}
+.not-found-desc {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+  margin: 0 0 32px;
+}
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 768px) {
+  .not-found-page {
+    padding: 96px 0;
   }
 }
