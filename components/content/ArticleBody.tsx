@@ -1,8 +1,40 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
+import type { ComponentProps } from "react";
 import { mdxComponents } from "./mdx/mdxComponents";
 import { createHeadingComponents } from "./mdx/createHeadingComponents";
 import type { TocItem } from "@/lib/toc";
+
+/**
+ * Scroll-reveal for markdown-native structural blocks (images, lists,
+ * tables) — reuses the site's existing `[data-aos]` mechanism
+ * (components/ui/ScrollReveal.tsx + globals.css), same as the custom MDX
+ * components below. Deliberately NOT applied to `p`: revealing every
+ * paragraph individually would break reading flow (see docs/03 §13-style
+ * reasoning) — only structural blocks get a reveal.
+ */
+const structuralBlockComponents = {
+  // Markdown-sourced image with an unknown-at-build-time src/dimensions;
+  // next/image isn't a drop-in replacement here and switching to it is out
+  // of this task's scope (pre-existing raw-<img> output, unchanged by this).
+  // eslint-disable-next-line @next/next/no-img-element
+  img: ({ alt, ...rest }: ComponentProps<"img">) => <img data-aos="fade-up" alt={alt ?? ""} {...rest} />,
+  ul: ({ children, ...rest }: ComponentProps<"ul">) => (
+    <ul data-aos="fade-up" {...rest}>
+      {children}
+    </ul>
+  ),
+  ol: ({ children, ...rest }: ComponentProps<"ol">) => (
+    <ol data-aos="fade-up" {...rest}>
+      {children}
+    </ol>
+  ),
+  table: ({ children, ...rest }: ComponentProps<"table">) => (
+    <table data-aos="fade-up" {...rest}>
+      {children}
+    </table>
+  ),
+};
 
 /**
  * The one place in the codebase that compiles/renders an MDX body — every
@@ -43,7 +75,7 @@ export function ArticleBody({ source, tocItems }: { source: string; tocItems: To
   return (
     <MDXRemote
       source={source}
-      components={{ ...mdxComponents, ...createHeadingComponents(tocItems) }}
+      components={{ ...mdxComponents, ...structuralBlockComponents, ...createHeadingComponents(tocItems) }}
       options={{
         mdxOptions: {
           remarkPlugins: [remarkGfm],

@@ -24,10 +24,16 @@ export function ArticleHeader({ column, readingTimeMinutes }: { column: ColumnEn
 
   return (
     <header className="column-article-header">
-      <p className="column-article-eyebrow">{frontmatter.category}</p>
-      <h1>{frontmatter.title}</h1>
-      <p className="column-article-summary">{frontmatter.summary}</p>
-      <div className="column-article-meta">
+      <p className="column-article-eyebrow" data-aos="fade-up" data-aos-delay={60}>
+        {frontmatter.category}
+      </p>
+      <h1 data-aos="fade-up" data-aos-delay={120}>
+        {frontmatter.title}
+      </h1>
+      <p className="column-article-summary" data-aos="fade-up" data-aos-delay={180}>
+        {frontmatter.summary}
+      </p>
+      <div className="column-article-meta" data-aos="fade-up" data-aos-delay={240}>
         <span className="column-article-meta-author">{author.frontmatter.name}</span>
         <time dateTime={toDateTimeAttr(frontmatter.publishedAt)}>{formatDateKo(frontmatter.publishedAt)}</time>
         {frontmatter.updatedAt && (

@@ -67,10 +67,18 @@ export function ColumnListingView({
             <EmptyState message={emptyMessage} />
           ) : (
             <>
-              <h2 className="column-list-section-title">{activeCategory ? "전체 글" : "최신 글"}</h2>
+              <h2 className="column-list-section-title" data-aos="fade-up">
+                {activeCategory ? "전체 글" : "최신 글"}
+              </h2>
               <div className="column-list-grid">
-                {pagination.items.map((column) => (
-                  <ColumnCard key={column.frontmatter.slug} column={column} />
+                {pagination.items.map((column, index) => (
+                  // Wrapper (not ColumnCard's own root) carries the reveal —
+                  // .column-list-card already owns `transform` for its hover
+                  // effect; see FeaturedColumns.tsx for why data-aos stays
+                  // off that element. Stagger capped at 320ms (index 4+).
+                  <div key={column.frontmatter.slug} data-aos="fade-up" data-aos-delay={Math.min(index, 4) * 80}>
+                    <ColumnCard column={column} />
+                  </div>
                 ))}
               </div>
               <Pagination pagination={pagination} basePath={basePath} />

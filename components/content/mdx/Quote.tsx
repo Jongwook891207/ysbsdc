@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 export function Quote({ cite, role, children }: { cite?: string; role?: string; children: ReactNode }) {
   const attribution = [cite, role].filter(Boolean).join(" · ");
   return (
-    <figure className="mdx-quote">
+    <figure className="mdx-quote" data-aos="fade-up">
       <blockquote>{children}</blockquote>
       {attribution && <figcaption>{attribution}</figcaption>}
     </figure>

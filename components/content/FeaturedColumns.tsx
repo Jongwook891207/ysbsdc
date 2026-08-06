@@ -13,10 +13,20 @@ export function FeaturedColumns({ columns }: { columns: ColumnEntry[] }) {
 
   return (
     <section className="column-featured">
-      <h2 className="column-featured-title">추천 칼럼</h2>
+      <h2 className="column-featured-title" data-aos="fade-up">
+        추천 칼럼
+      </h2>
       <div className="column-featured-grid">
-        {columns.map((column) => (
-          <ColumnCard key={column.frontmatter.slug} column={column} />
+        {columns.map((column, index) => (
+          // Wrapper carries the reveal animation instead of ColumnCard's own
+          // root element — .column-list-card already owns `transform` for
+          // its hover effect, and stacking [data-aos]'s own transform/
+          // transition on the same element would make hover inherit the
+          // reveal's 0.7s transition (via higher selector specificity) once
+          // revealed. Keeping data-aos on this wrapper avoids that entirely.
+          <div key={column.frontmatter.slug} data-aos="fade-up" data-aos-delay={Math.min(index, 4) * 80}>
+            <ColumnCard column={column} />
+          </div>
         ))}
       </div>
     </section>

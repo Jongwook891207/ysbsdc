@@ -24,7 +24,15 @@ export function createHeadingComponents(tocItems: TocItem[]) {
   }
 
   return {
-    h2: ({ children }: { children: ReactNode }) => <h2 id={nextId()}>{children}</h2>,
-    h3: ({ children }: { children: ReactNode }) => <h3 id={nextId()}>{children}</h3>,
+    h2: ({ children }: { children: ReactNode }) => (
+      <h2 id={nextId()} data-aos="fade-up">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }: { children: ReactNode }) => (
+      <h3 id={nextId()} data-aos="fade-up">
+        {children}
+      </h3>
+    ),
   };
 }

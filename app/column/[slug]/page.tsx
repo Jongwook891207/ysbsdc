@@ -121,11 +121,15 @@ export default async function ColumnDetailPage({ params }: { params: Promise<{ s
     <article className="column-detail">
       <JsonLd data={graph} />
       <div className="container">
-        <Breadcrumb items={breadcrumbItems} />
+        {/* data-aos wrapper stays here rather than inside Breadcrumb.tsx — that
+            component is also used by /doctor/[slug], outside this task's scope. */}
+        <div data-aos="fade-up">
+          <Breadcrumb items={breadcrumbItems} />
+        </div>
 
         <ArticleHeader column={column} readingTimeMinutes={column.readingTimeMinutes} />
 
-        <div className="column-detail-thumb">
+        <div className="column-detail-thumb" data-aos="fade-up" data-aos-delay={300}>
           <Image src={frontmatter.thumbnail} alt={`${frontmatter.title} 대표 이미지`} width={960} height={540} priority />
         </div>
 

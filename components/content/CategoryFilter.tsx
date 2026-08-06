@@ -17,7 +17,7 @@ export function CategoryFilter({
   if (categories.length === 0) return null;
 
   return (
-    <nav className="column-category-filter" aria-label="카테고리">
+    <nav className="column-category-filter" aria-label="카테고리" data-aos="fade-up" data-aos-delay={80}>
       <ul>
         <li>
           <Link href="/column" aria-current={activeCategory === undefined ? "page" : undefined}>

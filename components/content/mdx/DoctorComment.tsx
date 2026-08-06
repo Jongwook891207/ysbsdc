@@ -16,7 +16,7 @@ export function DoctorComment({ doctorSlug, children }: { doctorSlug: string; ch
   }
 
   return (
-    <aside className="mdx-doctor-comment">
+    <aside className="mdx-doctor-comment" data-aos="fade-up">
       <p className="mdx-doctor-comment-name">{doctor.frontmatter.name}</p>
       <div className="mdx-doctor-comment-body">{children}</div>
     </aside>

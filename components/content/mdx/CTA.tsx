@@ -19,7 +19,7 @@ export function CTA({
 }) {
   const isExternal = href.startsWith("http");
   return (
-    <p className="mdx-cta">
+    <p className="mdx-cta" data-aos="fade-up">
       <a
         href={href}
         className={`btn btn-${variant}`}

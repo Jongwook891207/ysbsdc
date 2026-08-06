@@ -15,7 +15,7 @@ export function ContentListHeader({
 }) {
   return (
     <section className="content-list-hero">
-      <div className="container">
+      <div className="container" data-aos="fade-up">
         <span className="eyebrow">{eyebrow}</span>
         <h1>{title}</h1>
         {description && <p className="content-list-hero-desc">{description}</p>}

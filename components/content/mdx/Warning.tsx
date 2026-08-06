@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
  */
 export function Warning({ title, children }: { title?: string; children: ReactNode }) {
   return (
-    <aside className="mdx-warning">
+    <aside className="mdx-warning" data-aos="fade-up">
       {title && <p className="mdx-warning-title">{title}</p>}
       <div className="mdx-warning-body">{children}</div>
     </aside>
