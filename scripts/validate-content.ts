@@ -141,8 +141,9 @@ check("getPublished() excludes both draft samples", () => {
     "wisdom-tooth-extraction-anxiety",
     "dental-implant-diabetes-hypertension",
     "root-canal-crown-timing",
+    "smoking-dental-implant-success",
   ].sort();
-  assert(published.length === 4, `expected 4 published entries, got ${published.length}`);
+  assert(published.length === 5, `expected 5 published entries, got ${published.length}`);
   assert(
     slugs.join(",") === expected.join(","),
     `expected [${expected.join(", ")}], got [${slugs.join(", ")}]`,
@@ -150,7 +151,12 @@ check("getPublished() excludes both draft samples", () => {
 });
 check("getAll() includes both draft samples plus all published real columns", () => {
   const all = columnSource.getAll();
-  assert(all.length === 6, `expected 6 total entries (4 published + 2 draft samples), got ${all.length}`);
+  assert(all.length === 7, `expected 7 total entries (5 published + 2 draft samples), got ${all.length}`);
+});
+check("smoking-dental-implant-success is published via /칼럼발행 (draft: false)", () => {
+  const column = columnSource.getBySlug("smoking-dental-implant-success");
+  assert(column !== null, "expected smoking-dental-implant-success to be loadable by slug");
+  assert(column?.frontmatter.draft === false, "expected smoking-dental-implant-success to be marked draft: false after publishing");
 });
 check("root-canal-crown-timing is published via /칼럼발행 (draft: false)", () => {
   const column = columnSource.getBySlug("root-canal-crown-timing");
