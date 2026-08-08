@@ -142,8 +142,9 @@ check("getPublished() excludes both draft samples", () => {
     "dental-implant-diabetes-hypertension",
     "root-canal-crown-timing",
     "smoking-dental-implant-success",
+    "cracked-tooth-diagnosis",
   ].sort();
-  assert(published.length === 5, `expected 5 published entries, got ${published.length}`);
+  assert(published.length === 6, `expected 6 published entries, got ${published.length}`);
   assert(
     slugs.join(",") === expected.join(","),
     `expected [${expected.join(", ")}], got [${slugs.join(", ")}]`,
@@ -151,7 +152,12 @@ check("getPublished() excludes both draft samples", () => {
 });
 check("getAll() includes both draft samples plus all published real columns", () => {
   const all = columnSource.getAll();
-  assert(all.length === 7, `expected 7 total entries (5 published + 2 draft samples), got ${all.length}`);
+  assert(all.length === 8, `expected 8 total entries (6 published + 2 draft samples), got ${all.length}`);
+});
+check("cracked-tooth-diagnosis is published via /칼럼발행 (draft: false)", () => {
+  const column = columnSource.getBySlug("cracked-tooth-diagnosis");
+  assert(column !== null, "expected cracked-tooth-diagnosis to be loadable by slug");
+  assert(column?.frontmatter.draft === false, "expected cracked-tooth-diagnosis to be marked draft: false after publishing");
 });
 check("smoking-dental-implant-success is published via /칼럼발행 (draft: false)", () => {
   const column = columnSource.getBySlug("smoking-dental-implant-success");
@@ -193,7 +199,7 @@ check("getByCategory()/getByTag() only return published entries", () => {
   );
   assert(columnSource.getByCategory("implant").length === 0, "implant-guide is now a draft — getByCategory(\"implant\") should return 0");
   assert(columnSource.getByCategory("진료철학").length === 1, "expected 1 published entry in category \"진료철학\"");
-  assert(columnSource.getByCategory("일반진료").length === 1, "expected 1 published entry in category \"일반진료\"");
+  assert(columnSource.getByCategory("일반진료").length === 2, "expected 2 published entries in category \"일반진료\"");
   assert(columnSource.getByTag("틀니").length === 0, "the only column tagged \"틀니\" is a draft — getByTag should return 0");
   assert(columnSource.getByTag("과잉진료").length === 1, "expected 1 published entry tagged \"과잉진료\"");
   assert(columnSource.getByTag("사랑니").length === 1, "expected 1 published entry tagged \"사랑니\"");
