@@ -7,6 +7,7 @@ import { ArticleBody } from "@/components/content/ArticleBody";
 import { TableOfContents } from "@/components/content/TableOfContents";
 import { AuthorBio } from "@/components/content/AuthorBio";
 import { TagList } from "@/components/content/TagList";
+import { FaqSection } from "@/components/content/FaqSection";
 import { RelatedTreatmentLinks } from "@/components/content/RelatedTreatmentLinks";
 import { RelatedArticles } from "@/components/content/RelatedArticles";
 import { CTA } from "@/components/content/mdx/CTA";
@@ -144,6 +145,8 @@ export default async function ColumnDetailPage({ params }: { params: Promise<{ s
         {frontmatter.relatedTreatmentSlugs && <RelatedTreatmentLinks slugs={frontmatter.relatedTreatmentSlugs} />}
 
         <TagList tags={frontmatter.tags} />
+
+        <FaqSection items={frontmatter.faq ?? []} />
 
         <CTA>지금 바로 상담 예약하기</CTA>
 

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ColumnCard } from "@/components/cards/ColumnCard";
@@ -93,6 +94,9 @@ export default async function DoctorProfilePage({ params }: { params: Promise<{ 
             <h1>{frontmatter.name}</h1>
             <p className="doctor-profile-job-title">{frontmatter.jobTitle}</p>
             <p className="doctor-profile-bio">{frontmatter.bio}</p>
+            <Link href="/doctor" className="doctor-profile-story-link">
+              {frontmatter.name} 원장의 진료 철학과 이야기
+            </Link>
           </div>
         </header>
 

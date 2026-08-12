@@ -4,7 +4,7 @@ import { StorySection } from "@/components/sections/mission/StorySection";
 import { VisionSection } from "@/components/sections/mission/VisionSection";
 import { CoreValuesSection } from "@/components/sections/mission/CoreValuesSection";
 import { ClosingSection } from "@/components/sections/mission/ClosingSection";
-import { SITE_NAME } from "@/lib/seo";
+import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "백세미션 - 연세백세치과의원";
 const SEO_DESCRIPTION =
@@ -34,6 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
+    url: absoluteUrl("/mission"),
     title: SEO_TITLE,
     description: SEO_DESCRIPTION,
     locale: "ko_KR",

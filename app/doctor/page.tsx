@@ -5,7 +5,7 @@ import { ExpertiseSection } from "@/components/sections/doctor/ExpertiseSection"
 import { PatientCareSection } from "@/components/sections/doctor/PatientCareSection";
 import { ProfileSection } from "@/components/sections/doctor/ProfileSection";
 import { FooterCtaSection } from "@/components/sections/doctor/FooterCtaSection";
-import { SITE_NAME } from "@/lib/seo";
+import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "대표원장 스토리 - 연세백세치과의원";
 const SEO_DESCRIPTION =
@@ -36,6 +36,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
+    url: absoluteUrl("/doctor"),
     title: SEO_TITLE,
     description: SEO_DESCRIPTION,
     locale: "ko_KR",

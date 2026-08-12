@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 const CAREER_GROUPS = [
@@ -65,6 +66,9 @@ export function ProfileSection() {
                 </ul>
               </div>
             ))}
+            <Link href="/doctor/kim-jongwook" className="profile-detail-link">
+              김종욱 대표원장의 학력·경력·전문분야 보기
+            </Link>
           </div>
         </div>
       </div>

@@ -1791,6 +1791,15 @@ footer {
   font-weight: 700;
   flex: none;
 }
+.doctor-page .profile-detail-link {
+  display: inline-block;
+  margin-top: 24px;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 @media (max-width: 960px) {
   .doctor-page .profile-grid {
@@ -1995,6 +2004,32 @@ footer {
   flex-wrap: wrap;
   justify-content: center;
   gap: 14px;
+}
+.treatment-page .kt-related-columns {
+  margin-top: 32px;
+  text-align: center;
+}
+.treatment-page .kt-related-columns-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.85;
+  margin: 0 0 10px;
+}
+.treatment-page .kt-related-columns ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.treatment-page .kt-related-columns a {
+  color: inherit;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 @media (max-width: 960px) {
@@ -2510,24 +2545,27 @@ body.modal-open {
   margin-bottom: 28px;
 }
 .mission-page .mission-hero h1 {
-  font-size: 32px;
   font-weight: 800;
-  line-height: 1.6;
   color: #fff;
   margin: 0;
 }
+.mission-page .mission-hero-title-desktop {
+  display: block;
+  font-size: 32px;
+  line-height: 1.6;
+}
+.mission-page .mission-hero-title-mobile {
+  display: none;
+}
 .mission-page .mission-hero .highlight-gold {
   color: var(--point-2);
-}
-.mission-page .mission-hero-mobile-title {
-  display: none;
 }
 .mission-page .mission-scroll-cue {
   display: none;
 }
 
 @media (min-width: 768px) {
-  .mission-page .mission-hero h1 {
+  .mission-page .mission-hero-title-desktop {
     font-size: 42px;
   }
 }
@@ -2858,23 +2896,20 @@ body.modal-open {
     padding: 8px 16px;
     margin-bottom: 20px;
   }
-  .mission-page .mission-hero h1.desktop-only {
-    /* The shared br.desktop-only utility only qualifies <br> elements, so
-       it never matched this <h1> — this page-specific rule (present in
-       the original mission.html) is the only thing hiding the desktop
-       headline on mobile. Missing this was the duplicate-headline bug. */
+  .mission-page .mission-hero-title-desktop {
+    /* This page-specific rule (present in the original mission.html) is
+       what hides the desktop wording on mobile — the h1 itself stays
+       rendered (single H1 for the page at every breakpoint); only this
+       inner span swaps out for -title-mobile below. */
     display: none;
   }
-  .mission-page .mission-hero-mobile-title {
+  .mission-page .mission-hero-title-mobile {
     display: block;
     font-size: 24px;
-    font-weight: 800;
     line-height: 1.55;
-    color: #fff;
-    margin: 0;
     word-break: keep-all;
   }
-  .mission-page .mission-hero-mobile-title .highlight-marker {
+  .mission-page .mission-hero-title-mobile .highlight-marker {
     /* index.html's own (unscoped) .highlight-marker sets a gradient
        background + padding for its own mobile hero — reset both here so
        they can't leak in, since this page's marker is text-only (see
@@ -3506,17 +3541,39 @@ body.modal-open {
 .column-related-treatments,
 .column-tag-list,
 .column-author-bio,
-.column-related-articles {
+.column-related-articles,
+.column-faq {
   max-width: 720px;
   margin: 0 auto 48px;
 }
 .column-related-treatments h2,
 .column-author-bio h2,
-.column-related-articles h2 {
+.column-related-articles h2,
+.column-faq h2 {
   font-size: 18px;
   font-weight: 700;
   color: var(--brand);
   margin: 0 0 16px;
+}
+.column-faq dl {
+  margin: 0;
+}
+.column-faq-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.column-faq-item:last-child {
+  border-bottom: none;
+}
+.column-faq-item dt {
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.column-faq-item dd {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.7;
 }
 .column-related-treatments ul {
   display: flex;
@@ -3954,6 +4011,15 @@ body.modal-open {
   font-size: 15px;
   line-height: 1.8;
   margin: 0;
+}
+.doctor-profile-story-link {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .doctor-profile-details {
   max-width: 720px;

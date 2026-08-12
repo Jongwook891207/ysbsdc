@@ -1,5 +1,6 @@
 import { CLINIC } from "@/lib/seo";
 import { ModalTriggerButton } from "./ModalTriggerButton";
+import { RelatedColumnLinks } from "./RelatedColumnLinks";
 
 const CARDS = [
   {
@@ -27,9 +28,9 @@ export function EndodonticsSection() {
         <div className="kt-head">
           <span className="eyebrow on-navy">KEY TREATMENT 03 — CONSERVATIVE DENTISTRY &amp; TOOTH PRESERVATION</span>
           <h2 className="kt-title">
-            임플란트를 가장 잘 심는 치과의 진짜 실력은,
+            임플란트를 고민하기 전에,
             <br />
-            자연치아를 함부로 뽑지 않는 데서 나옵니다.
+            먼저 살릴 수 있는 치아인지 확인합니다.
           </h2>
         </div>
         <div className="kt-grid kt-grid-3">
@@ -49,6 +50,7 @@ export function EndodonticsSection() {
             전화 상담 문의 ({CLINIC.telephoneDisplay})
           </a>
         </div>
+        <RelatedColumnLinks treatmentSlug="endodontics" />
       </div>
     </section>
   );

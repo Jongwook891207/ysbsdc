@@ -1,5 +1,6 @@
 import { CLINIC } from "@/lib/seo";
 import { ModalTriggerButton } from "./ModalTriggerButton";
+import { RelatedColumnLinks } from "./RelatedColumnLinks";
 
 /** Ports treatment.html's `<section class="key-denture" id="denture">` (Key Treatment 02). Modal opens TREATMENTS[2]. */
 export function DentureSection() {
@@ -9,7 +10,7 @@ export function DentureSection() {
         <div className="kt-head">
           <span className="eyebrow">KEY TREATMENT 02 — DENTURE &amp; IARPD</span>
           <h2 className="kt-title-light">
-            덜커덕거림과 잇몸 통증 걱정 없이,
+            잇몸에 가해지는 부담을 줄이는 방향으로,
             <br />
             건강보험 혜택으로 완성하는 1:1 맞춤 틀니 솔루션
           </h2>
@@ -52,6 +53,7 @@ export function DentureSection() {
             전화 상담 문의 ({CLINIC.telephoneDisplay})
           </a>
         </div>
+        <RelatedColumnLinks treatmentSlug="denture" />
       </div>
     </section>
   );

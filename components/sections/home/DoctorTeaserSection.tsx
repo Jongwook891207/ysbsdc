@@ -25,7 +25,7 @@ export function DoctorTeaserSection() {
             <br className="mobile-only" /> 오시는 치과가 아닙니다.
             <br />
             <span className="desktop-only-text">진심으로 대화하고,</span>
-            <span className="mobile-only-text">진심을 다해,</span> 아프지 않게 정성을 다하다 보니
+            <span className="mobile-only-text">진심을 다해,</span> 치료 중 불편함을 줄이기 위해 세심하게 진료하다 보니
             <br />
             어느덧 어르신들과 이웃분들이
             <br className="mobile-only" /> 먼저 알아봐 주는 치과가 되었습니다.

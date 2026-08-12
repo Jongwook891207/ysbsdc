@@ -1,16 +1,17 @@
 import { CLINIC } from "@/lib/seo";
 import { ModalTriggerButton } from "./ModalTriggerButton";
+import { RelatedColumnLinks } from "./RelatedColumnLinks";
 
 const CARDS = [
   {
     num: "01",
-    title: "모든 케이스 100% 맞춤 가이드 기본 적용",
-    desc: "타 병원 상당 비용의 디지털 가이드를 대표원장이 직접 3D로 디자인하여 모든 환자분께 100% 제공합니다.",
+    title: "환자분의 상태에 맞춘 가이드 수술",
+    desc: "디지털 가이드를 대표원장이 직접 3D로 디자인하며, 별도 제작비를 청구하지 않습니다.",
   },
   {
     num: "02",
     title: "3D CT 사전 컴퓨터 분석",
-    desc: "잇몸 속 뼈의 정밀한 상태와 신경관 위치를 미리 다 파악하여 가장 안전하고 정교한 위치를 선정합니다.",
+    desc: "잇몸 속 뼈의 상태와 신경관 위치를 미리 확인하여, 환자분의 상태에 맞는 임플란트 위치를 계획합니다.",
   },
   {
     num: "03",
@@ -34,7 +35,7 @@ export function ImplantSection() {
           <h2 className="kt-title">
             단 한 개의 임플란트도 감에 의존하지 않습니다.
             <br />
-            100% 맞춤 길잡이(가이드)로 오차 없이, 통증 걱정 없이 심습니다.
+            CT와 디지털 가이드를 활용해 수술 위치와 방향을 미리 계획합니다.
           </h2>
         </div>
         <div className="kt-grid">
@@ -54,6 +55,7 @@ export function ImplantSection() {
             전화 상담 예약하기
           </a>
         </div>
+        <RelatedColumnLinks treatmentSlug="implant" />
       </div>
     </section>
   );

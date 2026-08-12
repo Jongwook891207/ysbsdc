@@ -6,7 +6,7 @@ import { EndodonticsSection } from "@/components/sections/treatment/EndodonticsS
 import { GeneralTreatmentSection } from "@/components/sections/treatment/GeneralTreatmentSection";
 import { TreatmentModalProvider } from "@/components/sections/treatment/TreatmentModal";
 import { TREATMENTS } from "@/components/sections/treatment/treatments.data";
-import { SITE_NAME } from "@/lib/seo";
+import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "전체 진료 안내 - 연세백세치과의원";
 const SEO_DESCRIPTION =
@@ -37,6 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
+    url: absoluteUrl("/treatment"),
     title: SEO_TITLE,
     description: SEO_DESCRIPTION,
     locale: "ko_KR",

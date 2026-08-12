@@ -162,7 +162,7 @@ export const TREATMENTS: Treatment[] = [
   {
     num: "06",
     icon: "fa-solid fa-hand-holding-medical",
-    name: "단계별 아프지 않은 잇몸 치료 (치주치료)",
+    name: "단계적으로 진행하는 잇몸 치료 (치주치료)",
     summary: "잇몸 상태에 맞춘 단계별 스케일링과 치주소파로 진행하는 치주치료입니다.",
     features: [
       "잇몸 상태에 따른 단계별 스케일링·치주소파 진행",

@@ -16,7 +16,7 @@ const TOP_TREATMENTS: TopTreatment[] = [
     badge: "TOP 01",
     icon: "fa-solid fa-bullseye",
     title: "디지털 가이드 임플란트",
-    desc: "3D 디지털 가이드를 통한 정확하고 아프지 않은 임플란트",
+    desc: "3D 디지털 가이드로 환자분의 상태를 확인하고 계획하는 임플란트",
   },
   {
     href: "/treatment#denture",
