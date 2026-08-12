@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const canonicalUrl = absoluteUrl(`/column/${frontmatter.slug}`);
 
   return {
-    title: `${frontmatter.title} - ${SITE_NAME}`,
+    title: frontmatter.title,
     description: frontmatter.description,
     alternates: {
       canonical: `/column/${frontmatter.slug}`,

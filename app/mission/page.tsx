@@ -6,7 +6,7 @@ import { CoreValuesSection } from "@/components/sections/mission/CoreValuesSecti
 import { ClosingSection } from "@/components/sections/mission/ClosingSection";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
-const SEO_TITLE = "백세미션 - 연세백세치과의원";
+const SEO_TITLE = "백세미션";
 const SEO_DESCRIPTION =
   "부천 오정구 원종동·고강동 연세백세치과의원의 미션과 비전, 핵심가치. 치아를 치료하기 전에 환자분의 의구심과 불안을 먼저 치료하는 연세백세치과의 약속입니다.";
 // mission.html's original <head> only had a bare og:url (no og:title/

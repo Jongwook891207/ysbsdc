@@ -8,7 +8,7 @@ import { TreatmentModalProvider } from "@/components/sections/treatment/Treatmen
 import { TREATMENTS } from "@/components/sections/treatment/treatments.data";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
-const SEO_TITLE = "전체 진료 안내 - 연세백세치과의원";
+const SEO_TITLE = "전체 진료 안내";
 const SEO_DESCRIPTION =
   "부천 오정구 원종동·고강동 연세백세치과의원의 전체 진료 안내. 치과보존과 전문의 미세 신경치료, 맞춤 가이드 임플란트, 어르신 맞춤 틀니 등 12개 진료 과목의 특징과 치료 과정을 확인하세요.";
 // treatment.html's original <head> only had a bare og:url (no og:title/

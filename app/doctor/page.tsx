@@ -7,7 +7,7 @@ import { ProfileSection } from "@/components/sections/doctor/ProfileSection";
 import { FooterCtaSection } from "@/components/sections/doctor/FooterCtaSection";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
-const SEO_TITLE = "대표원장 스토리 - 연세백세치과의원";
+const SEO_TITLE = "대표원장 스토리";
 const SEO_DESCRIPTION =
   "부천 오정구 원종동·고강동 연세백세치과의원 대표원장 김종욱의 진료 철학과 약력. 치과보존과 전문의, 2,000건 이상 미세 신경치료, 자연치아 보존을 최우선으로 하는 진료 이야기.";
 const OG_IMAGE = "/images/doctor1.jpg";

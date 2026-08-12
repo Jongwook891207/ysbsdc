@@ -7,7 +7,7 @@ import { paginate } from "@/lib/pagination";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 import { buildColumnCollectionJsonLd, buildGraph } from "@/lib/jsonld";
 
-const SEO_TITLE = "원장 칼럼 - 연세백세치과의원";
+const SEO_TITLE = "원장 칼럼";
 const SEO_DESCRIPTION =
   "부천 오정구 원종동·고강동 연세백세치과의원 김종욱 원장이 직접 쓰는 치과 지식 칼럼. 임플란트, 틀니, 신경치료 등 진료 관련 궁금증을 알기 쉽게 설명합니다.";
 // No dedicated photo for this list page (same situation as /treatment,

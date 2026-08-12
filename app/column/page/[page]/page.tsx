@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ page: str
   const page = parsePageParam(pageParam);
   if (!page) return {};
 
-  const title = `원장 칼럼 ${page}페이지 - ${SITE_NAME}`;
+  const title = `원장 칼럼 ${page}페이지`;
   return {
     title,
     description: SEO_DESCRIPTION,

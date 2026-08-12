@@ -27,7 +27,7 @@ export async function generateMetadata({
   const match = getCategoryCounts(columnSource.getPublished()).find((c) => c.category === category);
   if (!match) return {};
 
-  const title = `${category} 칼럼 - ${SITE_NAME}`;
+  const title = `${category} 칼럼`;
   const description = `연세백세치과의원 원장 칼럼 중 "${category}" 카테고리 글을 모아 보여드립니다.`;
   return {
     title,

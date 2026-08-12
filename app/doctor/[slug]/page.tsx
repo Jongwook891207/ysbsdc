@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!author) return {};
 
   const { frontmatter } = author;
-  const title = `${frontmatter.name} ${frontmatter.jobTitle} - ${SITE_NAME}`;
+  const title = `${frontmatter.name} ${frontmatter.jobTitle}`;
   const canonicalUrl = absoluteUrl(`/doctor/${frontmatter.slug}`);
 
   return {
