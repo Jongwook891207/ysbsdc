@@ -2655,8 +2655,10 @@ body.modal-open {
 .mission-page .story-doctor-thought p {
   color: var(--text-muted);
   font-size: 16px;
-  line-height: 2;
-  margin: 0 0 20px;
+  line-height: 1.9;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  margin: 0 0 22px;
 }
 .mission-page .story-doctor-thought p:last-child {
   margin-bottom: 0;
@@ -3046,7 +3048,9 @@ body.modal-open {
     font-size: 18px;
   }
   .mission-page .story-doctor-thought p {
-    font-size: 15px;
+    font-size: 15.5px;
+    line-height: 1.85;
+    margin-bottom: 24px;
   }
 
   /* ===== Vision: hero-matched dark full-bleed treatment ===== */
