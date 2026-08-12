@@ -13,7 +13,7 @@ export function MissionHero() {
     <section className="mission-hero">
       <div className="container">
         <span className="eyebrow">연세백세치과의 사명</span>
-        <h1>
+        <h1 data-aos="fade-up">
           <span className="mission-hero-title-desktop">
             우리는 치아를 치료하기 전에,
             <br />

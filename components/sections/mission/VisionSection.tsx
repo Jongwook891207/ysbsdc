@@ -1,13 +1,13 @@
 /** Ports mission.html's `<section class="vision-section">`. Mobile-only grayscale photo background (vision-hallway.jpg) is pure CSS on the section's `::before`/`::after`. */
 export function VisionSection() {
   return (
-    <section className="vision-section" data-aos="fade-up">
+    <section className="vision-section">
       <div className="container">
         <div className="section-head center">
           <div className="rule center"></div>
           <span className="eyebrow">연세백세치과의 지향점</span>
         </div>
-        <div className="vision-card">
+        <div className="vision-card" data-aos="fade-up">
           <p>
             과잉진료를 걱정하며 치과를 헤매는 환자분이
             <br />

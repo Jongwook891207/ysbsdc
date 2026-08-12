@@ -2504,14 +2504,6 @@ body.modal-open {
   color: var(--point-2);
 }
 
-/* Cancel the shared global [data-aos] hide-by-default rule — this page's
-   reveal effect only applies on mobile (see the ≤768px block below);
-   desktop elements are visible immediately, matching the source exactly. */
-.mission-page [data-aos] {
-  opacity: 1;
-  transform: none;
-}
-
 /* ===== Hero ===== */
 .mission-page .mission-hero {
   position: relative;
@@ -2530,7 +2522,7 @@ body.modal-open {
 .mission-page .mission-hero .container {
   position: relative;
   z-index: 1;
-  max-width: 820px;
+  max-width: 960px;
 }
 .mission-page .mission-hero .eyebrow {
   display: inline-block;
@@ -2570,6 +2562,15 @@ body.modal-open {
   }
 }
 
+@media (min-width: 1440px) {
+  .mission-page .mission-hero .container {
+    max-width: 1040px;
+  }
+  .mission-page .mission-hero-title-desktop {
+    font-size: 50px;
+  }
+}
+
 /* ===== Why We Exist (Doctor Story) ===== */
 .mission-page .story-section {
   background: var(--bg);
@@ -2584,32 +2585,90 @@ body.modal-open {
   color: var(--brand);
   line-height: 1.6;
 }
-.mission-page .story-body {
-  max-width: 760px;
+
+/* 2-column layout: left = pull-quote, right = supporting body text.
+   Single column (grid-template-columns: 1fr) below 1024px so it stacks
+   naturally on tablet/mobile without a separate mobile override block. */
+.mission-page .story-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 56px;
 }
-.mission-page .story-body p {
+@media (min-width: 1024px) {
+  .mission-page .story-columns {
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 64px;
+  }
+}
+.mission-page .story-quote-text {
+  margin: 0;
+}
+.mission-page .story-col-quote .story-lead-emphasis {
+  display: inline-block;
+  color: var(--brand);
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.5;
+  padding-left: 20px;
+  border-left: 4px solid var(--point);
+}
+@media (min-width: 1024px) {
+  .mission-page .story-col-quote .story-lead-emphasis {
+    font-size: 27px;
+  }
+}
+.mission-page .story-col-body p {
   color: var(--text-muted);
   font-size: 16px;
   line-height: 2;
   margin: 0 0 24px;
 }
-.mission-page .story-body p:last-child {
+.mission-page .story-col-body p:last-child {
   margin-bottom: 0;
 }
-.mission-page .story-body p.story-quote-line {
-  color: var(--brand);
-  font-weight: 700;
-  font-size: 17px;
-  margin: 0 0 12px;
-  padding-left: 18px;
-  border-left: 3px solid var(--point);
-}
-.mission-page .story-body strong {
+.mission-page .story-col-body strong {
   color: var(--brand);
   font-weight: 800;
 }
 .mission-page .story-final {
   display: none;
+}
+
+/* ===== Anxiety cards (the two patient-worry lines) ===== */
+.mission-page .anxiety-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 768px) {
+  .mission-page .anxiety-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+}
+.mission-page .anxiety-card {
+  background: var(--point-soft);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+}
+.mission-page .anxiety-quote-mark {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--point);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.mission-page .anxiety-card p {
+  margin: 0;
+  color: var(--brand);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.6;
 }
 
 @media (min-width: 768px) {
@@ -2632,6 +2691,11 @@ body.modal-open {
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .mission-page .vision-card {
+    padding: 96px 72px;
+  }
 }
 .mission-page .vision-card::before {
   content: "";
@@ -2658,6 +2722,12 @@ body.modal-open {
 @media (min-width: 768px) {
   .mission-page .vision-card p {
     font-size: 24px;
+  }
+}
+@media (min-width: 1440px) {
+  .mission-page .vision-card p {
+    font-size: 28px;
+    max-width: 780px;
   }
 }
 
@@ -2801,13 +2871,16 @@ body.modal-open {
   color: var(--brand);
   font-weight: 800;
 }
-.mission-page .closing-sign {
-  margin: 36px 0 40px;
+.mission-page .closing-body p.closing-sign {
+  margin: 36px 0 0;
   font-style: italic;
   font-weight: 700;
   font-size: 16px;
   letter-spacing: 0.02em;
   color: var(--point);
+}
+.mission-page .closing-cta {
+  margin-top: 40px;
 }
 .mission-page .closing-section .btn {
   width: 100%;
@@ -2962,29 +3035,19 @@ body.modal-open {
   .mission-page .story-head h2 {
     font-size: 21px;
   }
-  .mission-page .story-body p {
+  .mission-page .story-columns {
+    gap: 28px;
+    margin-bottom: 40px;
+  }
+  .mission-page .story-col-body p {
     font-size: 15px;
   }
-  .mission-page .story-body p:first-child {
-    margin-bottom: 90px;
-  }
-  .mission-page .story-body p.story-quote-line {
+  .mission-page .anxiety-card p {
     font-size: 15.5px;
   }
   .mission-page .story-highlight {
     background: linear-gradient(180deg, rgba(243, 232, 211, 0) 55%, rgba(243, 232, 211, 0.6) 55%);
     padding: 0 2px;
-  }
-  .mission-page .story-body .story-lead-emphasis {
-    display: inline-block;
-    color: #0e2347;
-    background-color: #f3e8d3;
-    padding: 2px 5px;
-    border-radius: 3px;
-    margin-bottom: 90px;
-  }
-  .mission-page .story-body p.story-lead {
-    margin-bottom: 0;
   }
   .mission-page .story-final {
     display: block;
