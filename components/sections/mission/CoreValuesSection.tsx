@@ -55,21 +55,14 @@ export function CoreValuesSection() {
             <br className="desktop-only promise-head-break" />
             시스템으로 증명하는 진료
           </h2>
-          <p className="promise-body">
-            정직하겠다는 말은 누구나 할 수 있습니다.
-            <br className="mobile-only" />
-            하지만 연세백세치과는 말에 그치지 않고,
-            <br className="mobile-only" />
-            환자분이 눈으로 확인하고 피부로 느낄 수 있는
-            <br className="mobile-only" />
-            구체적인 시스템을 구축했습니다.
-            <span className="promise-gap-block">
-              치료 전 과정을 투명하게 공개하고,
-              <br className="mobile-only" />
-              치료 후에도 끝까지 소통하며, 결과를 책임지는 것.
-              <br className="mobile-only" />
-              <span className="promise-emphasis">그것이 우리가 정의하는 진짜 정직함입니다.</span>
-            </span>
+          <p className="promise-body promise-lead">
+            <strong className="promise-emphasis">
+              저희가 말하는 정직한 진료는 환자분이 직접 확인할 수 있어야 한다고 생각합니다.
+            </strong>
+          </p>
+          <p className="promise-body promise-bridge">
+            그래서 진료 전에는 충분히 보여드리고, 치료 과정에서는 궁금함이 남지 않도록 설명하며, 치료가 끝난
+            뒤에도 책임을 다하는 세 가지 원칙을 세웠습니다.
           </p>
         </div>
 

@@ -2738,11 +2738,16 @@ body.modal-open {
 .mission-page .promise-head p {
   color: var(--text-muted);
   font-size: 16px;
-  line-height: 2;
+  line-height: 1.9;
+  max-width: 620px;
   margin: 0;
 }
-.mission-page .promise-gap-block {
-  display: inline;
+.mission-page .promise-lead {
+  margin-bottom: 18px;
+}
+.mission-page .promise-emphasis {
+  color: var(--brand);
+  font-weight: 800;
 }
 .mission-page .values-grid {
   display: grid;
@@ -3123,7 +3128,7 @@ body.modal-open {
   }
   .mission-page .promise-head h2 {
     font-size: 21px;
-    margin-bottom: 60px;
+    margin-bottom: 24px;
   }
   .mission-page .promise-head h2 .promise-head-break {
     display: inline;
@@ -3131,14 +3136,7 @@ body.modal-open {
   .mission-page .promise-head p {
     font-size: 15px;
     color: var(--text);
-  }
-  .mission-page .promise-emphasis {
-    font-weight: 800;
-    color: var(--brand);
-  }
-  .mission-page .promise-gap-block {
-    display: block;
-    margin-top: 60px;
+    max-width: none;
   }
 
   .mission-page .value-card {
