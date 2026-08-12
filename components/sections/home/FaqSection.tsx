@@ -10,6 +10,18 @@ import { HOME_FAQ_ITEMS } from "@/lib/homeFaq";
  * default). `.faq-q` kept as the click target like the source markup, with
  * `role="button"`/keyboard support added since the original wasn't
  * keyboard-operable.
+ *
+ * `data-aos` lives on a static outer wrapper, never on `.faq-item` itself.
+ * ScrollReveal.tsx adds `.aos-animate` to the `[data-aos]` element via a
+ * direct DOM mutation React doesn't track. `.faq-item`'s own className
+ * changes on every open/close click (`isOpen` toggles the "open" suffix) —
+ * if `data-aos` were on that same element, React would overwrite its
+ * className on every click and silently drop the externally-added
+ * `aos-animate`, snapping the card back to the pre-reveal hidden state
+ * (opacity:0) for both the item opening and the one closing. The wrapper's
+ * className is a constant string (no props ever change it), so React never
+ * touches it and the reveal state is permanent once set — the accordion
+ * toggle and the scroll-reveal fade are on two separate DOM layers.
  */
 export function FaqSection() {
   const [openIndex, setOpenIndex] = useState(0);
@@ -42,26 +54,27 @@ export function FaqSection() {
             return (
               <div
                 key={item.question}
-                className={`faq-item${isOpen ? " open" : ""}`}
                 data-aos="fade-up"
                 data-aos-delay={index === 0 ? undefined : index * 60}
               >
-                <div
-                  className="faq-q"
-                  role="button"
-                  tabIndex={0}
-                  aria-expanded={isOpen}
-                  onClick={() => toggle(index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                >
-                  <span className="qt">
-                    <span className="qn">Q{index + 1}.</span>
-                    {item.question}
-                  </span>
-                  <span className="faq-chev"></span>
-                </div>
-                <div className="faq-a">
-                  <p>{item.answer}</p>
+                <div className={`faq-item${isOpen ? " open" : ""}`}>
+                  <div
+                    className="faq-q"
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isOpen}
+                    onClick={() => toggle(index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                  >
+                    <span className="qt">
+                      <span className="qn">Q{index + 1}.</span>
+                      {item.question}
+                    </span>
+                    <span className="faq-chev"></span>
+                  </div>
+                  <div className="faq-a">
+                    <p>{item.answer}</p>
+                  </div>
                 </div>
               </div>
             );
