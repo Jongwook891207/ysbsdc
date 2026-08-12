@@ -1,67 +1,66 @@
 /**
  * Ports mission.html's `<section class="story-section">` (Why We Exist / Doctor Story).
- * Restructured into a 2-column layout on desktop (quote left, body right) and
- * two separate "anxiety" cards for the two patient-worry lines — content/
- * wording unchanged from the original single-column version, only the
- * grouping and visual weight changed. The desktop/mobile duplicate-avoidance
- * pattern (`.desktop-only-text` full explanation vs `.story-final`
- * simplified restatement) is preserved as-is, just moved into the right
- * column.
+ * Single vertical flow, patient-first: heading (speaks to the patient, not
+ * the clinic) → the 6 questions actually in a patient's head (2x3 editorial
+ * card grid on desktop, one column on mobile) → a short turning-point line
+ * → the doctor's own reflection. Read order is intentionally
+ * patient's-thoughts → doctor's-thoughts, never the reverse.
  */
+const PATIENT_QUESTIONS = [
+  { no: "01", text: "필요 없는 치료까지 하라고 하면 어떡하지?" },
+  { no: "02", text: "설명을 들어도 잘 모르겠는데, 그냥 믿어야 하나?" },
+  { no: "03", text: "이 치아, 정말 지금 치료해야 하는 걸까?" },
+  { no: "04", text: "다른 치과에 가면 또 다른 이야기를 듣는 건 아닐까?" },
+  { no: "05", text: "치료를 시작했다가 비용이 계속 늘어나면 어떡하지?" },
+  { no: "06", text: "이 치아, 정말 살릴 수 없는 걸까?" },
+];
+
 export function StorySection() {
   return (
     <section className="story-section">
       <div className="container">
-        <div className="story-head">
+        <div className="story-head" data-aos="fade-up">
           <div className="rule"></div>
           <span className="eyebrow">우리가 존재하는 이유</span>
           <h2>
-            치료 기술보다 먼저 필요했던 것은,
+            치과에 오기 전,
             <br className="desktop-only" />
-            <span className="story-highlight">환자분의 두려움을 다독이는 일</span>이었습니다.
+            이런 생각을 해보신 적 있으신가요?
           </h2>
         </div>
 
-        <div className="story-columns">
-          <div className="story-col-quote" data-aos="fade-up">
-            <p className="story-quote-text">
-              <strong className="story-lead-emphasis">연세백세치과는 이 질문에서 출발했습니다.</strong>
-            </p>
-          </div>
-          <div className="story-col-body">
-            <p>
-              치과 의사로서 수많은 환자분을 만나며 깨달은 것이 있습니다. 환자분들이 문을 열고 들어오실 때 느끼는
-              가장 큰 감정은 &apos;치료의 통증&apos;에 대한 두려움보다{" "}
-              <strong>&apos;과잉진료에 대한 의구심과 불안&apos;</strong>이라는 사실입니다.
-            </p>
-            <p className="desktop-only-text">
-              치아를 정확히 깎아내고 메우는 기술도 중요하지만,{" "}
-              <strong>환자분이 마음을 놓고 의지할 수 있는 신뢰를 만드는 것이 진료의 시작</strong>이어야 한다고
-              믿습니다.
-            </p>
-            <p className="story-final">
-              치아를 정확하게 깎아내고 메우는 기술도 중요하지만,
-              <br />
-              환자분이 마음을 놓고 의지할 수 있는 신뢰를 만드는 것이
-              <br />
-              진료의 시작이어야 한다고 믿습니다.
-            </p>
-          </div>
+        <div className="patient-questions">
+          {PATIENT_QUESTIONS.map((q, i) => (
+            <div
+              key={q.no}
+              className="patient-question-card"
+              data-aos="fade-up"
+              data-aos-delay={i % 2 === 1 ? 70 : undefined}
+            >
+              <span className="pq-number" aria-hidden="true">
+                {q.no}
+              </span>
+              <p>{q.text}</p>
+            </div>
+          ))}
         </div>
 
-        <div className="anxiety-cards">
-          <div className="anxiety-card" data-aos="fade-up">
-            <span className="anxiety-quote-mark" aria-hidden="true">
-              &ldquo;
-            </span>
-            <p>필요 없는 치료까지 하라고 하면 어쩌지?</p>
-          </div>
-          <div className="anxiety-card" data-aos="fade-up" data-aos-delay={80}>
-            <span className="anxiety-quote-mark" aria-hidden="true">
-              &ldquo;
-            </span>
-            <p>설명을 들어도 잘 모르겠는데 그냥 믿어야 하나?</p>
-          </div>
+        <div className="story-turning-point" data-aos="fade-up">
+          <div className="rule center"></div>
+          <p>저희는 이 질문들에서 출발했습니다.</p>
+        </div>
+
+        <div className="story-doctor-thought" data-aos="fade-up">
+          <p>치과 의사로서 수많은 환자분을 만나며 깨달은 것이 있습니다.</p>
+          <p>
+            환자분들이 문을 열고 들어오실 때 느끼시는 가장 큰 감정은 &apos;치료의 통증&apos;에 대한
+            두려움보다, <strong>&apos;과잉진료에 대한 의구심과 불안&apos;</strong>이었습니다.
+          </p>
+          <p>
+            치아를 정확히 치료하는 기술도 중요하지만,{" "}
+            <strong>환자분이 마음을 놓고 의지할 수 있는 신뢰를 만드는 것이 진료의 시작</strong>이라고
+            믿습니다.
+          </p>
         </div>
       </div>
     </section>
