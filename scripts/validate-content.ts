@@ -144,16 +144,17 @@ check("getPublished() excludes both draft samples", () => {
     "smoking-dental-implant-success",
     "cracked-tooth-diagnosis",
     "no-overtreatment-philosophy",
+    "why-digital-guide-implant",
   ].sort();
-  assert(published.length === 7, `expected 7 published entries, got ${published.length}`);
+  assert(published.length === 8, `expected 8 published entries, got ${published.length}`);
   assert(
     slugs.join(",") === expected.join(","),
     `expected [${expected.join(", ")}], got [${slugs.join(", ")}]`,
   );
 });
-check("getAll() includes both draft samples plus all published real columns", () => {
+check("getAll() includes every draft plus all published real columns", () => {
   const all = columnSource.getAll();
-  assert(all.length === 9, `expected 9 total entries (7 published + 2 draft samples), got ${all.length}`);
+  assert(all.length === 10, `expected 10 total entries (7 published + 3 drafts), got ${all.length}`);
 });
 check("no-overtreatment-philosophy is published via /칼럼발행 (draft: false)", () => {
   const column = columnSource.getBySlug("no-overtreatment-philosophy");
