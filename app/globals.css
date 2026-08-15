@@ -3458,10 +3458,16 @@ body.modal-open {
   background: none;
   padding: 0;
 }
+.column-detail-body .article-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 0 24px;
+}
 .column-detail-body table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0 0 24px;
+  margin: 0;
   font-size: 14px;
 }
 .column-detail-body th,
@@ -3720,7 +3726,11 @@ body.modal-open {
 
 @media (max-width: 960px) {
   .column-detail-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .column-toc,
+  .column-detail-body {
+    min-width: 0;
   }
   .column-toc {
     position: static;

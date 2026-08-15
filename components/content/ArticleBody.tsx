@@ -29,10 +29,14 @@ const structuralBlockComponents = {
       {children}
     </ol>
   ),
+  // Wrapped so a table wider than its column (e.g. an evidence table with
+  // many columns) scrolls horizontally within itself on narrow viewports
+  // instead of forcing the whole page to overflow — the table keeps
+  // `display: table` (native table layout), only the wrapper scrolls.
   table: ({ children, ...rest }: ComponentProps<"table">) => (
-    <table data-aos="fade-up" {...rest}>
-      {children}
-    </table>
+    <div className="article-table-wrapper" data-aos="fade-up">
+      <table {...rest}>{children}</table>
+    </div>
   ),
 };
 
