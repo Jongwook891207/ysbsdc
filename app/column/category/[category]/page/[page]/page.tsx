@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { ColumnListingView } from "@/components/content/ColumnListingView";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
-import { getCategoryCounts, MIN_PUBLIC_CATEGORY_COUNT } from "@/lib/taxonomy";
+import { decodeCategoryParam, getCategoryCounts, MIN_PUBLIC_CATEGORY_COUNT } from "@/lib/taxonomy";
 import { paginate, parsePageParam } from "@/lib/pagination";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 import { buildBreadcrumbJsonLd, buildColumnCollectionJsonLd, buildGraph } from "@/lib/jsonld";
@@ -35,7 +35,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ category: string; page: string }>;
 }): Promise<Metadata> {
-  const { category, page: pageParam } = await params;
+  const { category: rawCategory, page: pageParam } = await params;
+  const category = decodeCategoryParam(rawCategory);
   const page = parsePageParam(pageParam);
   if (!page) return {};
 
@@ -74,7 +75,8 @@ export default async function ColumnCategoryPagedPage({
 }: {
   params: Promise<{ category: string; page: string }>;
 }) {
-  const { category, page: pageParam } = await params;
+  const { category: rawCategory, page: pageParam } = await params;
+  const category = decodeCategoryParam(rawCategory);
   const page = parsePageParam(pageParam);
   if (page === null) notFound();
   if (page === 1) redirect(`/column/category/${encodeURIComponent(category)}`);

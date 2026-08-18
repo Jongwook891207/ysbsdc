@@ -3,15 +3,16 @@ import { notFound } from "next/navigation";
 import { ColumnListingView } from "@/components/content/ColumnListingView";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
-import { getCategoryCounts, MIN_PUBLIC_CATEGORY_COUNT } from "@/lib/taxonomy";
+import { decodeCategoryParam, getCategoryCounts, MIN_PUBLIC_CATEGORY_COUNT } from "@/lib/taxonomy";
 import { paginate } from "@/lib/pagination";
 import { absoluteUrl, SITE_NAME } from "@/lib/seo";
 import { buildBreadcrumbJsonLd, buildColumnCollectionJsonLd, buildGraph } from "@/lib/jsonld";
 
 /**
  * generateStaticParams uses the raw (undecoded) category string as the
- * param value — Next encodes it into the URL itself and decodes it back
- * out of params on render, so this doesn't need its own encode/decode step.
+ * param value — Next encodes it into the URL for the route itself. See
+ * `decodeCategoryParam` (lib/taxonomy.ts) for why `params.category` still
+ * needs an explicit decode below despite that.
  */
 export async function generateStaticParams() {
   const categories = getCategoryCounts(columnSource.getPublished());
@@ -23,7 +24,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
-  const { category } = await params;
+  const { category: rawCategory } = await params;
+  const category = decodeCategoryParam(rawCategory);
   const match = getCategoryCounts(columnSource.getPublished()).find((c) => c.category === category);
   if (!match) return {};
 
@@ -58,7 +60,8 @@ export async function generateMetadata({
 }
 
 export default async function ColumnCategoryPage({ params }: { params: Promise<{ category: string }> }) {
-  const { category } = await params;
+  const { category: rawCategory } = await params;
+  const category = decodeCategoryParam(rawCategory);
   const published = columnSource.getPublished();
   const categories = getCategoryCounts(published);
   const match = categories.find((c) => c.category === category);

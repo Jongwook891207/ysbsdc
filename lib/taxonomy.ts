@@ -46,6 +46,33 @@ export function getIndexableCategories(entries: ColumnEntry[]): CategoryCount[] 
   return getCategoryCounts(entries).filter((c) => c.count >= MIN_PUBLIC_CATEGORY_COUNT);
 }
 
+/**
+ * Decodes a `[category]` dynamic-route param before comparing it against
+ * `getCategoryCounts()`/`getByCategory()` values.
+ *
+ * Confirmed via a local build trace (Next 15.5.22, App Router): for a
+ * non-ASCII category, `generateStaticParams` returns the raw string (e.g.
+ * "임플란트"), but at prerender time `params.category` arrives as the
+ * *still percent-encoded* form ("%EC%9E%84%ED%94%8C%EB%9E%80%ED%8A%B8")
+ * instead of the decoded string. A direct `params.category === category`
+ * comparison against the raw frontmatter value then always fails for
+ * every non-ASCII category, and Next bakes a 404 into the static page at
+ * build time — reproduced locally, not a Vercel-only quirk. (The stale
+ * assumption this replaces — "Next decodes params back out for us" — used
+ * to live as a comment on the category page; it was wrong.)
+ *
+ * Falls back to the raw string if decoding throws, so a genuinely
+ * malformed segment still 404s through the normal "no match found" path
+ * instead of throwing here.
+ */
+export function decodeCategoryParam(raw: string): string {
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 export interface TagCount {
   tag: string;
   count: number;
