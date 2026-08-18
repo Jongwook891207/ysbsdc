@@ -69,7 +69,7 @@ export default async function DoctorProfilePage({ params }: { params: Promise<{ 
   const canonicalUrl = absoluteUrl(`/doctor/${frontmatter.slug}`);
   const breadcrumbItems = [
     { label: "홈", href: "/" },
-    { label: "대표원장 스토리", href: "/doctor" },
+    { label: "대표원장 김종욱", href: "/doctor" },
     { label: frontmatter.name, href: `/doctor/${frontmatter.slug}` },
   ];
   const authoredColumns = columnSource.getPublished().filter((c) => c.frontmatter.authorSlug === frontmatter.slug);

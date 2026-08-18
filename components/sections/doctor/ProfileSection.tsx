@@ -30,7 +30,17 @@ const CAREER_GROUPS = [
   },
 ];
 
-/** Ports doctor.html's `<section class="chapter-alt" id="profile">` (Doctor Profile & Full History). */
+/**
+ * Ports doctor.html's `<section class="chapter-alt" id="profile">`
+ * (Doctor Profile & Full History). Now that TimelineSection carries the
+ * chronology as narrative, this section is de-emphasized on purpose —
+ * `.profile-highlights` gives the 4 headline credentials a quick objective
+ * summary, and `.doctor-page .profile-*` CSS shrinks the typographic scale
+ * (see globals.css) — but no career data is removed; the full
+ * CAREER_GROUPS list stays intact, just visually quieter.
+ */
+const PROFILE_HIGHLIGHTS = ["연세대학교", "원주세브란스병원 수련", "치과보존과 전문의", "임상 14년"];
+
 export function ProfileSection() {
   return (
     <section className="chapter-alt" id="profile">
@@ -56,6 +66,11 @@ export function ProfileSection() {
             </div>
           </div>
           <div className="career-groups" data-aos="fade-up" data-aos-delay={100}>
+            <ul className="profile-highlights">
+              {PROFILE_HIGHLIGHTS.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
             {CAREER_GROUPS.map((group) => (
               <div key={group.title} className="career-group">
                 <h3>{group.title}</h3>

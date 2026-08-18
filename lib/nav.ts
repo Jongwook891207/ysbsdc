@@ -32,7 +32,7 @@ export type NavEntry =
 
 export const NAV_ENTRIES: NavEntry[] = [
   { type: "link", label: "백세미션", href: "/mission" },
-  { type: "link", label: "대표원장 스토리", href: "/doctor" },
+  { type: "link", label: "대표원장 김종욱", href: "/doctor" },
   {
     type: "dropdown",
     dropdown: {

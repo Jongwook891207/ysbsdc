@@ -1445,7 +1445,7 @@ footer {
 }
 .doctor-page .hero-split {
   display: grid;
-  grid-template-columns: 45% 55%;
+  grid-template-columns: minmax(0, 45%) minmax(0, 55%);
   gap: 56px;
   align-items: center;
 }
@@ -1458,6 +1458,7 @@ footer {
   aspect-ratio: 4 / 5;
   position: relative;
   box-shadow: 0 24px 48px rgba(15, 44, 89, 0.16);
+  min-width: 0;
 }
 .doctor-page .hero-visual img {
   position: absolute;
@@ -1475,29 +1476,55 @@ footer {
   letter-spacing: 0.02em;
   margin-bottom: 0;
 }
+.doctor-page .hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.doctor-page .hero-focus {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 20px;
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
 .doctor-page .hero-content {
   text-align: left;
+  min-width: 0;
 }
 .doctor-page .hero-content h1 {
   display: block;
   font-size: 26px;
   font-weight: 800;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--brand);
-  margin: 26px 0 32px;
+  margin: 26px 0 24px;
+}
+.doctor-page .hero-content .hero-desc {
+  display: block;
+  max-width: 480px;
+  margin-bottom: 22px;
+}
+.doctor-page .hero-content .hero-desc p {
+  margin: 0;
+  color: var(--text);
+  font-size: 16.5px;
+  line-height: 1.8;
 }
 .doctor-page .hero-content .hero-sub {
   display: block;
   color: var(--text-muted);
-  font-size: 16px;
-  line-height: 2;
+  font-size: 13.5px;
+  line-height: 1.7;
   margin-bottom: 0;
 }
 .doctor-page .hero-content .hero-sub p {
-  margin: 0 0 22px;
-}
-.doctor-page .hero-content .hero-sub p:last-child {
-  margin-bottom: 28px;
+  margin: 0 0 28px;
 }
 .doctor-page .hero-cta {
   display: flex;
@@ -1543,171 +1570,490 @@ footer {
   }
 }
 
-/* ===== Chapter One (개원 이야기 — 배경 이미지) ===== */
-.doctor-page .story-chapter-one {
-  position: relative;
-  background-image: url("/images/building.png");
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
+/* ===== Timeline (editorial vertical timeline — year / line+dot / body) ===== */
+.doctor-page .doctor-timeline {
+  padding: 120px 0;
 }
-.doctor-page .story-chapter-one::before {
+.doctor-page .doctor-timeline .section-head {
+  max-width: 680px;
+}
+.doctor-page .timeline-list {
+  max-width: 720px;
+  margin-top: 8px;
+}
+.doctor-page .timeline-item {
+  display: grid;
+  grid-template-columns: 132px 24px 1fr;
+  align-items: start;
+  column-gap: 8px;
+}
+.doctor-page .timeline-item::before {
   content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.65);
-  z-index: 0;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-self: center;
+  width: 1px;
+  height: 100%;
+  background: var(--line);
 }
-.doctor-page .story-chapter-one .container {
-  position: relative;
-  z-index: 1;
+.doctor-page .timeline-item:last-child::before {
+  display: none;
 }
-.doctor-page .story-chapter-one .sub-title {
-  display: inline-block;
+.doctor-page .timeline-year {
+  padding-top: 2px;
   color: var(--point-2);
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: 0.01em;
+}
+
+@media (min-width: 768px) {
+  .doctor-page .timeline-year {
+    font-size: 19px;
+  }
+}
+.doctor-page .timeline-dot {
+  grid-column: 2;
+  justify-self: center;
+  width: 9px;
+  height: 9px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--point);
+}
+.doctor-page .timeline-body {
+  padding-bottom: 40px;
+}
+.doctor-page .timeline-body h3 {
+  margin: 0 0 8px;
+  color: var(--brand);
+  font-size: 17px;
   font-weight: 700;
+}
+.doctor-page .timeline-body p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+
+/* ===== Conservative-dentistry background — 3-tier hierarchy: plain intro
+   -> a visually distinct 3-question focal block -> plain explanation that
+   closes on a judgment habit (not "무조건 살립니다"). ===== */
+.doctor-page .background-section {
+  background: var(--brand-soft);
+  padding: 120px 0;
+}
+.doctor-page .background-text {
+  max-width: 640px;
+}
+.doctor-page .background-text p {
+  color: var(--text);
+  font-size: 16.5px;
+  line-height: 2;
+  margin: 0 0 18px;
+}
+.doctor-page .background-text p:last-child {
+  margin-bottom: 0;
+}
+.doctor-page .background-text strong {
+  color: var(--brand);
+  font-weight: 800;
+}
+.doctor-page .background-conclusion {
+  color: var(--brand) !important;
+  font-weight: 700;
+}
+.doctor-page .background-questions {
+  max-width: 640px;
+  margin: 56px 0;
+  padding-left: 24px;
+  border-left: 2px solid var(--point);
+}
+.doctor-page .background-questions .rule {
+  display: none;
+}
+.doctor-page .background-questions p {
+  margin: 0 0 24px;
+  color: var(--brand);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+.doctor-page .background-questions p:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+  .doctor-page .background-questions p {
+    font-size: 30px;
+  }
+}
+
+/* ===== Judgment principles — the page's killer section: large centered
+   statements on a dark band, not a card grid. ===== */
+.doctor-page .judgment-section {
+  background: var(--brand);
+  color: #fff;
+}
+.doctor-page .judgment-section .eyebrow {
+  color: var(--point-2);
+}
+.doctor-page .judgment-list {
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.doctor-page .judgment-item {
+  padding: 40px 0;
+  text-align: center;
+  border-top: 1px solid rgba(224, 169, 109, 0.3);
+}
+.doctor-page .judgment-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.doctor-page .judgment-item:last-child {
+  padding-bottom: 0;
+}
+.doctor-page .judgment-num {
+  display: block;
+  color: var(--point-2);
+  font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.14em;
   margin-bottom: 16px;
 }
-.doctor-page .story-chapter-one .main-title {
-  color: #ffffff;
+.doctor-page .judgment-text {
+  margin: 0 0 14px;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.6;
 }
-.doctor-page .story-chapter-one .story-text {
-  max-width: 760px;
+.doctor-page .judgment-highlight {
+  color: var(--point-2);
 }
-.doctor-page .story-chapter-one .story-text p {
-  color: #e7ecf4;
-  font-size: 16px;
-  line-height: 2;
-  margin: 0 0 36px;
+.doctor-page .judgment-support {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 14.5px;
+  font-weight: 400;
+  line-height: 1.6;
 }
-.doctor-page .story-chapter-one .story-text p:last-child {
-  margin-bottom: 0;
-}
-@media (max-width: 768px) {
-  .doctor-page .story-chapter-one {
-    /* 건물 좌측 상단 "연세백세치과" 간판이 모바일 화면에 보이도록 정렬 */
-    background-position: 20% 25%;
-    background-size: cover;
+
+@media (min-width: 768px) {
+  .doctor-page .judgment-text {
+    font-size: 27px;
   }
 }
 
-/* ===== Chapters ===== */
-.doctor-page .chapter-alt {
-  background: #f5efe3;
+/* ===== In-clinic moments — text-only editorial list (no repeated Hero/
+   Profile photo; see InClinicSection.tsx for the future image-slot note).
+   num + verb create the visual rhythm down the list. ===== */
+.doctor-page .inclinic-section {
+  padding: 120px 0;
 }
-.doctor-page .chapter-body {
-  max-width: 760px;
-}
-.doctor-page .chapter-body.center {
+.doctor-page .inclinic-layout {
+  max-width: 720px;
   margin: 0 auto;
-  text-align: center;
 }
-.doctor-page .chapter-body p {
-  color: var(--text-muted);
-  font-size: 16px;
-  line-height: 2;
-  margin: 0 0 36px;
-}
-.doctor-page .chapter-body p:last-child {
-  margin-bottom: 0;
-}
-
-/* ===== Number Grid (Chapter 2) ===== */
-.doctor-page .number-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  margin: 48px 0 40px;
-}
-.doctor-page .number-card {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 32px 20px;
-  text-align: center;
-  box-shadow: var(--shadow);
-  border-top: 3px solid var(--point);
-}
-.doctor-page .number-value {
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--brand);
-  line-height: 1.2;
-}
-.doctor-page .number-value span {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text-muted);
-  margin-left: 2px;
-}
-.doctor-page .number-label {
-  margin-top: 12px;
-  font-size: 13.5px;
-  color: var(--text-muted);
-  letter-spacing: 0.01em;
-}
-
-.doctor-page .highlight-box {
-  background: var(--brand);
-  color: #fff;
-  border-radius: 18px;
-  padding: 40px 36px;
+.doctor-page .inclinic-list {
   margin-top: 8px;
 }
-.doctor-page .highlight-box p {
-  color: #e7ecf4;
-  font-size: 16px;
-  line-height: 2;
-  margin: 0 0 20px;
-}
-.doctor-page .highlight-box p:last-child {
-  margin-bottom: 0;
-}
-.doctor-page .highlight-box strong {
-  color: var(--point-2);
-  font-weight: 800;
-}
-
-@media (max-width: 960px) {
-  .doctor-page .number-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .doctor-page .highlight-box {
-    padding: 32px 24px;
-  }
-}
-
-/* ===== Card 2 (patient care) ===== */
-.doctor-page .care-grid {
+.doctor-page .inclinic-item {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 32px auto 1fr;
+  align-items: start;
+  column-gap: 20px;
+  padding: 26px 0;
+  border-top: 1px solid var(--line);
+}
+.doctor-page .inclinic-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+.doctor-page .inclinic-item:last-child {
+  padding-bottom: 0;
+}
+.doctor-page .inclinic-num {
+  padding-top: 4px;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.doctor-page .inclinic-verb {
+  color: var(--brand);
+  font-weight: 800;
+  font-size: 24px;
+  white-space: nowrap;
+}
+.doctor-page .inclinic-item p {
+  margin: 0;
+  padding-top: 4px;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+@media (min-width: 768px) {
+  .doctor-page .inclinic-verb {
+    font-size: 29px;
+  }
+}
+
+/* ===== Treatment focus (3 core areas, equal weight, thin cards) ===== */
+.doctor-page .treatment-focus-section {
+  background: var(--brand-soft);
+  padding: 120px 0;
+}
+.doctor-page .treatment-focus-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
-.doctor-page .care-card {
+.doctor-page .treatment-focus-card {
+  display: block;
   background: var(--card);
-  border-radius: 18px;
-  padding: 36px 32px;
-  box-shadow: var(--shadow);
-  border-top: 3px solid var(--point);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 32px 28px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
 }
-.doctor-page .care-card h3 {
+.doctor-page .treatment-focus-card:hover {
+  border-color: var(--point);
+}
+.doctor-page .treatment-focus-num {
+  display: block;
+  color: var(--point-2);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  margin-bottom: 14px;
+}
+.doctor-page .treatment-focus-card h3 {
   font-size: 19px;
   font-weight: 700;
   color: var(--brand);
-  margin-bottom: 16px;
+  margin: 0 0 12px;
 }
-.doctor-page .care-card p {
+.doctor-page .treatment-focus-judgment {
   color: var(--text-muted);
   font-size: 15px;
-  line-height: 2;
-  margin: 0;
+  line-height: 1.7;
+  margin: 0 0 18px;
+}
+.doctor-page .treatment-focus-link {
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 13.5px;
 }
 
 @media (max-width: 960px) {
-  .doctor-page .care-grid {
+  .doctor-page .doctor-timeline,
+  .doctor-page .background-section,
+  .doctor-page .inclinic-section,
+  .doctor-page .treatment-focus-section {
+    padding: 80px 0;
+  }
+  .doctor-page .treatment-focus-grid {
     grid-template-columns: 1fr;
   }
+  .doctor-page .judgment-item {
+    padding: 28px 0;
+  }
+  .doctor-page .background-questions {
+    margin: 40px 0;
+    padding-left: 18px;
+  }
+  .doctor-page .timeline-item {
+    grid-template-columns: 20px 1fr;
+    column-gap: 16px;
+  }
+  .doctor-page .timeline-item::before {
+    grid-column: 1;
+  }
+  .doctor-page .timeline-dot {
+    grid-column: 1;
+  }
+  .doctor-page .timeline-year {
+    grid-column: 2;
+    grid-row: 1;
+    padding-top: 0;
+  }
+  .doctor-page .timeline-body {
+    grid-column: 2;
+    grid-row: 2;
+    margin-top: 6px;
+    padding-bottom: 32px;
+  }
+  .doctor-page .inclinic-item {
+    grid-template-columns: 24px 1fr;
+    row-gap: 8px;
+    column-gap: 14px;
+    padding: 20px 0;
+  }
+  .doctor-page .inclinic-num {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    padding-top: 5px;
+  }
+  .doctor-page .inclinic-verb {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .doctor-page .inclinic-item p {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* ===== Column notes (Section 08) — duplicates .column-page's
+   .column-list-card styling under .doctor-page scope, same convention as
+   every other *-page namespace on this site (each page scopes its own
+   copy rather than sharing selectors across pages). ===== */
+.doctor-page .column-notes-section {
+  padding: 120px 0;
+  text-align: center;
+}
+.doctor-page .column-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  text-align: left;
+  margin-bottom: 40px;
+}
+.doctor-page .column-list-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.doctor-page .column-list-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(15, 44, 89, 0.12);
+}
+.doctor-page .column-list-card-link {
+  display: block;
+  color: inherit;
+}
+.doctor-page .column-list-thumb {
+  aspect-ratio: 16 / 10;
+  background: var(--point-soft);
+  position: relative;
+}
+.doctor-page .column-list-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.doctor-page .column-list-body {
+  padding: 20px 22px 22px;
+}
+.doctor-page .column-list-category {
+  display: inline-block;
+  color: var(--point-2);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+.doctor-page .column-list-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--brand);
+  margin: 0 0 8px;
+}
+.doctor-page .column-list-summary {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin: 0 0 14px;
+}
+.doctor-page .column-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.doctor-page .column-list-reading-time::before {
+  content: "·";
+  margin-right: 10px;
+}
+.doctor-page .column-notes-link {
+  display: inline-block;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 960px) {
+  .doctor-page .column-notes-section {
+    padding: 80px 0;
+  }
+  .doctor-page .column-notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Closing — quiet, no strong booking CTA ===== */
+.doctor-page .doctor-closing-section {
+  padding: 140px 0;
+  text-align: center;
+}
+.doctor-page .doctor-closing-text {
+  max-width: 520px;
+  margin: 0 auto 32px;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.8;
+}
+.doctor-page .doctor-closing-sign {
+  margin: 40px 0 32px;
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.7;
+}
+.doctor-page .doctor-closing-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.doctor-page .doctor-closing-links a {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.doctor-page .doctor-closing-links a:hover {
+  color: var(--brand);
+}
+
+@media (max-width: 960px) {
+  .doctor-page .doctor-closing-section {
+    padding: 90px 0;
+  }
+}
+
+/* ===== Chapters (still used by ProfileSection's light-beige background) ===== */
+.doctor-page .chapter-alt {
+  background: #f5efe3;
 }
 
 /* ===== Profile ===== */
@@ -1747,13 +2093,30 @@ footer {
   margin: 0;
 }
 
+/* Quick objective summary — de-emphasizes the rest of this section now
+   that TimelineSection carries the narrative version of this chronology. */
+.doctor-page .profile-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin: 0 0 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+.doctor-page .profile-highlights li {
+  color: var(--brand);
+  font-weight: 700;
+  font-size: 14.5px;
+}
+
 .doctor-page .career-groups {
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 .doctor-page .career-group {
-  padding: 28px 0;
+  padding: 22px 0;
   border-bottom: 1px solid var(--line);
 }
 .doctor-page .career-group:first-child {
@@ -1764,25 +2127,25 @@ footer {
   padding-bottom: 0;
 }
 .doctor-page .career-group h3 {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--text-muted);
   letter-spacing: 0.04em;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   padding-left: 14px;
   border-left: 3px solid var(--point);
 }
 .doctor-page .career-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .doctor-page .career-list li {
   display: flex;
   gap: 10px;
-  font-size: 15px;
+  font-size: 13.5px;
   color: var(--text-muted);
-  line-height: 1.8;
+  line-height: 1.7;
   padding-left: 14px;
 }
 .doctor-page .career-list li::before {
@@ -1809,26 +2172,6 @@ footer {
     max-width: 280px;
     margin: 0 auto;
   }
-}
-
-/* ===== Footer CTA ===== */
-.doctor-page .footer-cta {
-  background: var(--brand);
-  color: #fff;
-  text-align: center;
-}
-.doctor-page .footer-cta p {
-  font-size: 18px;
-  line-height: 1.9;
-  color: #e7ecf4;
-  max-width: 600px;
-  margin: 0 auto 40px;
-}
-.doctor-page .footer-cta .btn-row {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
 }
 
 /* ==========================================================================

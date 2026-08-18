@@ -1,27 +1,30 @@
 import type { Metadata } from "next";
 import { DoctorHero } from "@/components/sections/doctor/DoctorHero";
-import { StoryChapterSection } from "@/components/sections/doctor/StoryChapterSection";
-import { ExpertiseSection } from "@/components/sections/doctor/ExpertiseSection";
-import { PatientCareSection } from "@/components/sections/doctor/PatientCareSection";
+import { TimelineSection } from "@/components/sections/doctor/TimelineSection";
+import { ConservativeBackgroundSection } from "@/components/sections/doctor/ConservativeBackgroundSection";
+import { JudgmentPrinciplesSection } from "@/components/sections/doctor/JudgmentPrinciplesSection";
+import { InClinicSection } from "@/components/sections/doctor/InClinicSection";
+import { TreatmentFocusSection } from "@/components/sections/doctor/TreatmentFocusSection";
 import { ProfileSection } from "@/components/sections/doctor/ProfileSection";
-import { FooterCtaSection } from "@/components/sections/doctor/FooterCtaSection";
+import { ColumnNotesSection } from "@/components/sections/doctor/ColumnNotesSection";
+import { ClosingSection } from "@/components/sections/doctor/ClosingSection";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
-const SEO_TITLE = "대표원장 스토리";
+const SEO_TITLE = "대표원장 김종욱";
 const SEO_DESCRIPTION =
-  "부천 오정구 원종동·고강동 연세백세치과의원 대표원장 김종욱의 진료 철학과 약력. 치과보존과 전문의, 2,000건 이상 미세 신경치료, 자연치아 보존을 최우선으로 하는 진료 이야기.";
+  "부천 오정구 원종동·고강동 연세백세치과의원 대표원장 김종욱을 소개합니다. 치과보존과 전문의로서 임플란트·틀니·신경치료를 진료하며, 치료 전 무엇이 필요한지부터 판단하는 진료 방식을 소개합니다.";
 const OG_IMAGE = "/images/doctor1.jpg";
 
 /**
  * Stage 3-2: doctor.html full migration. Stage 5-1: filled in the
  * robots/openGraph/twitter fields the metadata was missing (title/
  * description/canonical already existed) — no JSON-LD added here on
- * purpose. This is the "대표원장 스토리" brand-narrative page; the
- * canonical Person entity/profile lives at /doctor/[slug] (stage 5-1),
- * so this page doesn't duplicate that structured data. Note: this page
- * doesn't currently link to /doctor/kim-jongwook (no cross-link exists
- * either direction) — out of scope for this stage's "SEO 기반만" brief,
- * left as a follow-up.
+ * purpose. Renewed (doctor-page-renewal stage) into a WHO-focused editorial
+ * profile — "대표원장 김종욱" — distinct from `/mission` (WHY) and
+ * `/treatment` (WHAT/HOW). The canonical Person entity/profile lives at
+ * /doctor/[slug] (stage 5-1), so this page still doesn't duplicate that
+ * structured data. canonical/robots/openGraph.url structure unchanged from
+ * before this renewal — only the title/description copy changed.
  */
 export const metadata: Metadata = {
   title: SEO_TITLE,
@@ -54,11 +57,14 @@ export default function DoctorStoryPage() {
   return (
     <div className="doctor-page">
       <DoctorHero />
-      <StoryChapterSection />
-      <ExpertiseSection />
-      <PatientCareSection />
+      <TimelineSection />
+      <ConservativeBackgroundSection />
+      <JudgmentPrinciplesSection />
+      <InClinicSection />
+      <TreatmentFocusSection />
       <ProfileSection />
-      <FooterCtaSection />
+      <ColumnNotesSection />
+      <ClosingSection />
     </div>
   );
 }

@@ -50,7 +50,7 @@ export function DoctorTeaserSection() {
             <li>전) 국군의무사령부 국군고양병원 치과부장 (중령 보직)</li>
           </ul>
           <Link href="/doctor" className="btn btn-gold">
-            대표원장 스토리 &amp; 약력 전체보기 →
+            대표원장 김종욱 소개 보기 →
           </Link>
         </div>
       </div>
