@@ -141,29 +141,35 @@ function makeFixtureEntry(overrides: Partial<ColumnEntry["frontmatter"]> & { slu
 console.log("Content data layer validation\n");
 
 console.log("real content/columns:");
-check("getPublished() excludes both draft samples", () => {
+// Deliberately NOT asserting a specific total count or exact slug list here
+// (e.g. "exactly 9 published", "exactly 11 total"). Those numbers only ever
+// reflected how many columns existed the day this section was written —
+// content/columns/ is meant to keep growing via /칼럼쓰기 and
+// /학술칼럼쓰기, and a hardcoded count/list would fail on every legitimate
+// new column. The checks below assert real invariants instead: every
+// published entry is actually draft:false, the two long-standing draft
+// fixtures (implant-guide, denture-care-basics — see their own file
+// comments) stay excluded from getPublished() and stay loadable via
+// getBySlug()/getAll(), and getAll() is always a superset of getPublished().
+check("getPublished() contains only draft:false entries and excludes the known draft samples", () => {
   const published = columnSource.getPublished();
-  const slugs = published.map((entry) => entry.frontmatter.slug).sort();
-  const expected = [
-    "why-we-recommend-second-opinions",
-    "wisdom-tooth-extraction-anxiety",
-    "dental-implant-diabetes-hypertension",
-    "root-canal-crown-timing",
-    "smoking-dental-implant-success",
-    "cracked-tooth-diagnosis",
-    "no-overtreatment-philosophy",
-    "why-digital-guide-implant",
-    "immediate-vs-delayed-implant-placement",
-  ].sort();
-  assert(published.length === 9, `expected 9 published entries, got ${published.length}`);
-  assert(
-    slugs.join(",") === expected.join(","),
-    `expected [${expected.join(", ")}], got [${slugs.join(", ")}]`,
-  );
+  assert(published.length > 0, "expected content/columns/ to have at least one published entry");
+  for (const entry of published) {
+    assert(entry.frontmatter.draft === false, `getPublished() returned a draft entry: ${entry.filePath}`);
+  }
+  const publishedSlugs = new Set(published.map((entry) => entry.frontmatter.slug));
+  assert(!publishedSlugs.has("implant-guide"), "expected the known draft sample implant-guide to stay excluded from getPublished()");
+  assert(!publishedSlugs.has("denture-care-basics"), "expected the known draft sample denture-care-basics to stay excluded from getPublished()");
 });
-check("getAll() includes every draft plus all published real columns", () => {
+check("getAll() is a superset of getPublished() and still includes both known draft samples", () => {
   const all = columnSource.getAll();
-  assert(all.length === 11, `expected 11 total entries (9 published + 2 drafts), got ${all.length}`);
+  const allSlugs = new Set(all.map((entry) => entry.frontmatter.slug));
+  for (const entry of columnSource.getPublished()) {
+    assert(allSlugs.has(entry.frontmatter.slug), `getAll() is missing a published entry present in getPublished(): ${entry.frontmatter.slug}`);
+  }
+  assert(allSlugs.has("implant-guide"), "expected getAll() to still include the draft sample implant-guide");
+  assert(allSlugs.has("denture-care-basics"), "expected getAll() to still include the draft sample denture-care-basics");
+  assert(all.length > columnSource.getPublished().length, "expected getAll() to include at least the two known drafts in addition to every published entry");
 });
 check("no-overtreatment-philosophy is published via /칼럼발행 (draft: false)", () => {
   const column = columnSource.getBySlug("no-overtreatment-philosophy");
@@ -208,23 +214,38 @@ check("implant-guide is a draft sample, excluded from getPublished()", () => {
 check("getBySlug() returns null for a nonexistent slug", () => {
   assert(columnSource.getBySlug("does-not-exist") === null, "expected null for an unknown slug");
 });
-check("getByCategory()/getByTag() only return published entries", () => {
-  assert(
-    columnSource.getByCategory("denture").length === 0,
-    "the only \"denture\" entry is a draft — getByCategory should return 0",
-  );
-  assert(columnSource.getByCategory("implant").length === 0, "implant-guide is now a draft — getByCategory(\"implant\") should return 0");
-  assert(columnSource.getByCategory("진료철학").length === 2, "expected 2 published entries in category \"진료철학\"");
-  assert(columnSource.getByCategory("일반진료").length === 2, "expected 2 published entries in category \"일반진료\"");
-  assert(columnSource.getByTag("틀니").length === 0, "the only column tagged \"틀니\" is a draft — getByTag should return 0");
-  assert(columnSource.getByTag("과잉진료").length === 2, "expected 2 published entries tagged \"과잉진료\"");
-  assert(columnSource.getByTag("사랑니").length === 1, "expected 1 published entry tagged \"사랑니\"");
+check("getByCategory() only returns published entries and matches the category, for every real category", () => {
+  const realCategories = new Set(columnSource.getAll().map((entry) => entry.frontmatter.category));
+  for (const category of realCategories) {
+    for (const entry of columnSource.getByCategory(category)) {
+      assert(entry.frontmatter.draft === false, `getByCategory("${category}") returned a draft entry: ${entry.filePath}`);
+      assert(entry.frontmatter.category === category, `getByCategory("${category}") returned a mismatched category entry: ${entry.filePath}`);
+    }
+  }
+  // The two known draft fixtures use category "implant"/"denture" (an older
+  // English-value scheme no real published column uses) — a stable,
+  // count-free regression check that draft-only categories stay excluded.
+  assert(columnSource.getByCategory("implant").length === 0, 'expected category "implant" (only used by the draft sample implant-guide) to have 0 published entries');
+  assert(columnSource.getByCategory("denture").length === 0, 'expected category "denture" (only used by the draft sample denture-care-basics) to have 0 published entries');
+});
+check("getByTag() only returns published entries and includes the queried tag, for every real tag", () => {
+  const realTags = new Set(columnSource.getAll().flatMap((entry) => entry.frontmatter.tags));
+  for (const tag of realTags) {
+    for (const entry of columnSource.getByTag(tag)) {
+      assert(entry.frontmatter.draft === false, `getByTag("${tag}") returned a draft entry: ${entry.filePath}`);
+      assert(entry.frontmatter.tags.includes(tag), `getByTag("${tag}") returned an entry not actually tagged "${tag}": ${entry.filePath}`);
+    }
+  }
+  assert(columnSource.getByTag("틀니").length === 0, 'expected tag "틀니" (only used by the draft sample denture-care-basics) to have 0 published entries');
 });
 check("getFeatured() only returns published + featured entries", () => {
-  const featured = columnSource.getFeatured();
+  for (const entry of columnSource.getFeatured()) {
+    assert(entry.frontmatter.featured === true, `getFeatured() returned a non-featured entry: ${entry.filePath}`);
+    assert(entry.frontmatter.draft === false, `getFeatured() returned a draft entry: ${entry.filePath}`);
+  }
   assert(
-    featured.length === 1 && featured[0]?.frontmatter.slug === "why-we-recommend-second-opinions",
-    "expected only why-we-recommend-second-opinions",
+    columnSource.getFeatured().some((entry) => entry.frontmatter.slug === "why-we-recommend-second-opinions"),
+    "expected why-we-recommend-second-opinions to still be among the featured entries",
   );
 });
 check("real columns' authorSlug/reviewedBySlug all resolve to a real author", () => {
