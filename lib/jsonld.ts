@@ -53,6 +53,9 @@ export function faqId(canonicalUrl: string): string {
 export function collectionId(canonicalUrl: string): string {
   return `${canonicalUrl}#collection`;
 }
+export function webPageId(canonicalUrl: string): string {
+  return `${canonicalUrl}#webpage`;
+}
 
 /** Wraps a list of bare entities (no individual `@context`) in one `@graph` with a single top-level `@context`. */
 export function buildGraph(entities: Record<string, unknown>[]): Record<string, unknown> {
@@ -187,6 +190,45 @@ export function buildPersonJsonLd(author: AuthorFrontmatter): Record<string, unk
     alumniOf:
       alumniOf.length > 0 ? alumniOf.map((name) => ({ "@type": "EducationalOrganization", name })) : undefined,
     knowsAbout: author.specialties.length > 0 ? author.specialties : undefined,
+  };
+}
+
+/**
+ * Minimal WebPage entity (or a more specific subtype via `type`) for a page
+ * whose real, detailed structured data already lives elsewhere in the
+ * graph — `/doctor`'s Person entity lives at `/doctor/kim-jongwook`,
+ * `/treatment` and `/mission` both describe the same clinic the homepage's
+ * Dentist entity already models. This never re-declares those entities; it
+ * only emits `@id` references via `mainEntity`/`about` — the same
+ * "reference, don't duplicate" rule `buildDentistJsonLd()`'s `founder`
+ * already follows. `name`/`description` are meant to be the same strings a
+ * page already puts in its `Metadata.title`/`description`, not new copy.
+ */
+export function buildWebPageJsonLd({
+  type = "WebPage",
+  canonicalUrl,
+  name,
+  description,
+  mainEntityId,
+  aboutId,
+}: {
+  type?: "WebPage" | "ProfilePage" | "MedicalWebPage";
+  canonicalUrl: string;
+  name: string;
+  description?: string;
+  mainEntityId?: string;
+  aboutId?: string;
+}): Record<string, unknown> {
+  return {
+    "@type": type,
+    "@id": webPageId(canonicalUrl),
+    url: canonicalUrl,
+    name,
+    description,
+    inLanguage: "ko-KR",
+    isPartOf: { "@id": WEBSITE_ID },
+    mainEntity: mainEntityId ? { "@id": mainEntityId } : undefined,
+    about: aboutId ? { "@id": aboutId } : undefined,
   };
 }
 

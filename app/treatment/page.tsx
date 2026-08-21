@@ -6,6 +6,8 @@ import { EndodonticsSection } from "@/components/sections/treatment/EndodonticsS
 import { GeneralTreatmentSection } from "@/components/sections/treatment/GeneralTreatmentSection";
 import { TreatmentModalProvider } from "@/components/sections/treatment/TreatmentModal";
 import { TREATMENTS } from "@/components/sections/treatment/treatments.data";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildGraph, buildWebPageJsonLd, DENTIST_ID } from "@/lib/jsonld";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "전체 진료 안내";
@@ -51,9 +53,31 @@ export const metadata: Metadata = {
   },
 };
 
+// MedicalWebPage (not per-treatment Service/MedicalProcedure entities): this
+// page lists 12 treatment categories but states no price, no outcome claim,
+// and no per-procedure credential beyond what's already in TREATMENTS.data —
+// declaring 12 separate Service/MedicalProcedure entities would assert a
+// level of structured detail (offers, availability, etc.) nothing on the
+// page actually backs. MedicalWebPage is the same WebPage subtype
+// buildArticleJsonLd() already uses for reviewed dental content, so it's
+// the accurate, minimal choice for "a page describing medical procedures"
+// without inventing sub-entities. `about` references the clinic by @id
+// rather than repeating the Dentist entity (only declared once, on the
+// homepage).
+const treatmentJsonLd = buildGraph([
+  buildWebPageJsonLd({
+    type: "MedicalWebPage",
+    canonicalUrl: absoluteUrl("/treatment"),
+    name: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    aboutId: DENTIST_ID,
+  }),
+]);
+
 export default function TreatmentPage() {
   return (
     <div className="treatment-page">
+      <JsonLd data={treatmentJsonLd} />
       <TreatmentModalProvider treatments={TREATMENTS}>
         <TreatmentHero />
         <ImplantSection />

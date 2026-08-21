@@ -82,7 +82,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ColumnDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const column = columnSource.getBySlug(slug);
-  if (!column) notFound();
+  // getBySlug() reads getAll() (drafts included) — generateStaticParams()
+  // above only pre-builds published slugs, but Next's default dynamicParams
+  // fallback still renders anything requested by URL on-demand. Without this
+  // check a draft would render at 200 for anyone who guesses/finds its URL,
+  // even though it's already excluded from the sitemap and /column listing.
+  if (!column || column.frontmatter.draft) notFound();
 
   const { frontmatter } = column;
   const author = authorSource.getBySlug(frontmatter.authorSlug);

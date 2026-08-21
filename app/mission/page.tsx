@@ -4,6 +4,8 @@ import { StorySection } from "@/components/sections/mission/StorySection";
 import { VisionSection } from "@/components/sections/mission/VisionSection";
 import { CoreValuesSection } from "@/components/sections/mission/CoreValuesSection";
 import { ClosingSection } from "@/components/sections/mission/ClosingSection";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildGraph, buildWebPageJsonLd, DENTIST_ID } from "@/lib/jsonld";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "백세미션";
@@ -48,9 +50,23 @@ export const metadata: Metadata = {
   },
 };
 
+// Plain WebPage: this page states principles/promises, not medical
+// procedures or a person's credentials, so neither MedicalWebPage nor
+// ProfilePage fits. `about` references the clinic Dentist entity by @id
+// (only declared once, on the homepage) rather than inventing a new one.
+const missionJsonLd = buildGraph([
+  buildWebPageJsonLd({
+    canonicalUrl: absoluteUrl("/mission"),
+    name: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    aboutId: DENTIST_ID,
+  }),
+]);
+
 export default function MissionPage() {
   return (
     <div className="mission-page">
+      <JsonLd data={missionJsonLd} />
       <MissionHero />
       <StorySection />
       <VisionSection />
