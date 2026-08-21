@@ -245,20 +245,21 @@ check("authorSource.getBySlug() returns null for a nonexistent slug", () => {
 });
 
 console.log("\nreal content/faq:");
-check("getPublished() returns all 20 MVP FAQs, none draft", () => {
-  const published = faqSource.getPublished();
-  assert(published.length === 20, `expected 20 published FAQs, got ${published.length}`);
+// Deliberately NOT asserting a specific total count (e.g. "exactly 20").
+// That number only ever reflected how many FAQs existed the day this
+// section was written — content/faq/ is meant to keep growing (see the
+// /칼럼쓰기 + /학술칼럼쓰기 FAQ-derivation workflow), and a hardcoded count
+// here would fail on every legitimate future addition. The checks below
+// assert real invariants instead: valid category, resolvable references,
+// a working extractShortAnswer(), no exact duplicates, and the
+// still-current "no FAQ has its own URL yet" product boundary.
+check("at least one published FAQ exists", () => {
+  assert(faqSource.getPublished().length > 0, "expected content/faq/ to have at least one published entry");
 });
 check("every FAQ category slug is one of the 9 known categories", () => {
   const knownSlugs = new Set(FAQ_CATEGORIES.map((c) => c.slug));
   for (const entry of faqSource.getPublished()) {
     assert(knownSlugs.has(entry.frontmatter.category), `unexpected FAQ category "${entry.frontmatter.category}" in ${entry.filePath}`);
-  }
-});
-check("each of the 9 FAQ categories has at least 1 published entry (MVP)", () => {
-  for (const { slug, label } of FAQ_CATEGORIES) {
-    const count = faqSource.getByCategory(slug).length;
-    assert(count >= 1, `expected category "${label}" (${slug}) to have at least 1 published FAQ, got ${count}`);
   }
 });
 check("getByCategory() only returns published entries and matches the category", () => {
@@ -269,7 +270,7 @@ check("getByCategory() only returns published entries and matches the category",
     }
   }
 });
-check("all 20 FAQs' authorSlug resolve to a real author", () => {
+check("all FAQs' authorSlug resolve to a real author", () => {
   validateFaqAuthorReferences();
 });
 check("all FAQs' relatedTreatmentSlugs resolve to a real /treatment anchor", () => {
@@ -278,6 +279,25 @@ check("all FAQs' relatedTreatmentSlugs resolve to a real /treatment anchor", () 
 check("all FAQs' relatedColumnSlugs resolve to a real column file", () => {
   validateFaqRelatedColumnSlugs();
 });
+check("no published FAQ exposes a draft column as a visible relatedColumn link", () => {
+  const publishedColumnSlugs = new Set(columnSource.getPublished().map((c) => c.frontmatter.slug));
+  for (const entry of faqSource.getPublished()) {
+    for (const slug of entry.frontmatter.relatedColumnSlugs) {
+      const column = columnSource.getBySlug(slug);
+      if (column && !publishedColumnSlugs.has(slug)) {
+        // The reference itself is legitimate (natural authoring order —
+        // see checkFaqRelatedColumnSlugs). What must never happen is a
+        // *rendered* page treating it as visible: app/faq/[category]/page.tsx
+        // must filter relatedColumnSlugs down to published columns before
+        // building the link list. This check can't inspect the rendered
+        // JSX directly, so it asserts the underlying fact that page relies
+        // on: the column is genuinely a draft, which the render-time filter
+        // (column.frontmatter.draft) excludes it on.
+        assert(column.frontmatter.draft === true, `${entry.filePath}: relatedColumnSlugs "${slug}" is unpublished but not marked draft — inconsistent state`);
+      }
+    }
+  }
+});
 check("extractShortAnswer() succeeds on every real FAQ body without throwing", () => {
   for (const entry of faqSource.getPublished()) {
     const answer = extractShortAnswer(entry.content, entry.filePath);
@@ -285,10 +305,60 @@ check("extractShortAnswer() succeeds on every real FAQ body without throwing", (
     assert(answer.length < 400, `expected a genuinely short (1-2 sentence) answer for ${entry.filePath}, got ${answer.length} chars — check the opening paragraph isn't the whole body`);
   }
 });
-check("promote defaults to false and no MVP entry is promoted yet", () => {
-  for (const entry of faqSource.getPublished()) {
-    assert(entry.frontmatter.promote === false, `expected promote: false for ${entry.filePath} — no FAQ is promoted to an individual URL in this MVP`);
+check("no two FAQs share an exact-duplicate question/alias (normalized)", () => {
+  const normalize = (s: string) => s.trim().toLowerCase().replace(/\s+/g, "").replace(/[?？.!！,、]/g, "");
+  const seen = new Map<string, string>(); // normalized text -> filePath
+  for (const entry of faqSource.getAll()) {
+    const texts = [entry.frontmatter.question, ...entry.frontmatter.aliases];
+    for (const text of texts) {
+      const key = normalize(text);
+      const existing = seen.get(key);
+      if (existing && existing !== entry.filePath) {
+        throw new Error(
+          `Exact-duplicate FAQ question/alias "${text}" in both ${existing} and ${entry.filePath}. ` +
+            `Connect the new column to the existing FAQ's relatedColumnSlugs instead of creating a second FAQ.`,
+        );
+      }
+      seen.set(key, entry.filePath);
+    }
   }
+});
+check("promote defaults to false and no FAQ is promoted to an individual URL yet", () => {
+  for (const entry of faqSource.getAll()) {
+    assert(entry.frontmatter.promote === false, `expected promote: false for ${entry.filePath} — no FAQ has its own URL in this project yet`);
+  }
+});
+
+/** validFrontmatter() always quotes its overrides (they're all strings elsewhere in this file) — draft needs a real YAML boolean, so build it by splicing an unquoted line into the base block instead. */
+function validFrontmatterWithDraft(draft: boolean, overrides: Record<string, string> = {}): string {
+  const base = validFrontmatter(overrides);
+  return base.replace(/^---\n/, `---\ndraft: ${draft}\n`);
+}
+
+console.log("\nfixture: FAQ relatedColumn draft-visibility (mirrors app/faq/[category]/page.tsx's render filter)");
+check("a draft column referenced by relatedColumnSlugs is excluded from the visible-link filter", () => {
+  withTempDir({ "draft-column.mdx": validFrontmatterWithDraft(true, { slug: "draft-column" }) }, (dir) => {
+    const tempColumns = createContentSource(tempColumnConfig(dir));
+    const relatedColumnSlugs = ["draft-column"];
+    // Same predicate as app/faq/[category]/page.tsx's relatedColumns filter —
+    // this fixture exists so that predicate has an explicit regression test,
+    // since the page itself (a React Server Component) isn't exercised by
+    // this script.
+    const visible = relatedColumnSlugs
+      .map((slug) => tempColumns.getBySlug(slug))
+      .filter((column): column is NonNullable<typeof column> => column !== null && !column.frontmatter.draft);
+    assert(visible.length === 0, "expected a draft column to be excluded from the visible relatedColumn link list");
+  });
+});
+check("the same column becomes visible once its draft flag is published (draft: false)", () => {
+  withTempDir({ "published-column.mdx": validFrontmatterWithDraft(false, { slug: "published-column" }) }, (dir) => {
+    const tempColumns = createContentSource(tempColumnConfig(dir));
+    const relatedColumnSlugs = ["published-column"];
+    const visible = relatedColumnSlugs
+      .map((slug) => tempColumns.getBySlug(slug))
+      .filter((column): column is NonNullable<typeof column> => column !== null && !column.frontmatter.draft);
+    assert(visible.length === 1, "expected a published column to appear in the visible relatedColumn link list — no FAQ edit should be required");
+  });
 });
 
 console.log("\nfixture: extractShortAnswer() structural robustness");

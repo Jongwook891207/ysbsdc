@@ -99,9 +99,18 @@ export default async function FaqCategoryPage({ params }: { params: Promise<{ ca
     const treatmentLinks = entry.frontmatter.relatedTreatmentSlugs
       .map((slug) => TREATMENT_ANCHORS[slug])
       .filter((anchor): anchor is NonNullable<typeof anchor> => Boolean(anchor));
+    // A FAQ may legitimately reference a column that isn't published yet
+    // (natural authoring order — see checkFaqRelatedColumnSlugs in
+    // lib/content/sources/faq.ts, which allows draft columns at the
+    // reference-integrity level on purpose). That reference must never
+    // become a visible link on a published FAQ page — a draft column has
+    // no live route and would 404 — so filter to published columns only
+    // here, at render time, rather than forbidding the reference itself.
+    // The link reappears automatically once the column is published, with
+    // no FAQ edit required.
     const relatedColumns = entry.frontmatter.relatedColumnSlugs
       .map((slug) => columnSource.getBySlug(slug))
-      .filter((column): column is NonNullable<typeof column> => column !== null);
+      .filter((column): column is NonNullable<typeof column> => column !== null && !column.frontmatter.draft);
     const hasLinks = treatmentLinks.length > 0 || relatedColumns.length > 0;
 
     return {
