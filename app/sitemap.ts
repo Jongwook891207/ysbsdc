@@ -3,6 +3,7 @@ import { SITE_URL } from "@/lib/seo";
 import { columnSource, COLUMN_PAGE_SIZE } from "@/lib/content/sources/columns";
 import { authorSource } from "@/lib/content/sources/authors";
 import { getIndexableCategories } from "@/lib/taxonomy";
+import { FAQ_CATEGORIES } from "@/lib/faqCategories";
 import type { ColumnEntry } from "@/lib/content/types";
 
 /**
@@ -36,7 +37,7 @@ function lastModifiedOf(entry: ColumnEntry): Date {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/doctor", "/treatment", "/mission", "/column"];
+  const staticRoutes = ["", "/doctor", "/treatment", "/mission", "/column", "/faq"];
   const entries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: `${SITE_URL}${route}`,
   }));
@@ -58,6 +59,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const totalPages = Math.max(1, Math.ceil(published.length / COLUMN_PAGE_SIZE));
   for (let page = 2; page <= totalPages; page++) {
     entries.push({ url: `${SITE_URL}/column/page/${page}` });
+  }
+
+  // Phase 3-B: all 9 FAQ category pages are always index (they're
+  // aggregate/hub pages, same policy as /column's static routes above) —
+  // unlike columns, no individual /faq/[category]/[slug] URL exists yet
+  // (every FAQ launches Hub-only, design doc §F/§T), so there is nothing
+  // to gate by promote/MIN_PUBLIC_CATEGORY_COUNT here.
+  for (const { slug } of FAQ_CATEGORIES) {
+    entries.push({ url: `${SITE_URL}/faq/${slug}` });
   }
 
   for (const { category } of getIndexableCategories(published)) {

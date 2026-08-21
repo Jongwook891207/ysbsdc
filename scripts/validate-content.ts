@@ -27,11 +27,19 @@ import {
   validateColumnAuthorReferences,
   validateColumnRelatedTreatmentSlugs,
 } from "../lib/content/sources/columns";
+import {
+  faqSource,
+  validateFaqAuthorReferences,
+  validateFaqRelatedColumnSlugs,
+  validateFaqRelatedTreatmentSlugs,
+} from "../lib/content/sources/faq";
 import { TREATMENT_ANCHORS } from "../lib/treatmentAnchors";
+import { FAQ_CATEGORIES } from "../lib/faqCategories";
 import { authorSource } from "../lib/content/sources/authors";
 import { paginate, parsePageParam } from "../lib/pagination";
 import { getCategoryCounts, getIndexableCategories, getTagCounts } from "../lib/taxonomy";
 import { getRelatedColumns } from "../lib/related";
+import { extractShortAnswer, ShortAnswerExtractionError } from "../lib/extractShortAnswer";
 import type { ContentTypeConfig } from "../lib/content/registry";
 import type { ColumnEntry } from "../lib/content/types";
 
@@ -234,6 +242,87 @@ check("authorSource loads kim-jongwook", () => {
 });
 check("authorSource.getBySlug() returns null for a nonexistent slug", () => {
   assert(authorSource.getBySlug("no-such-author") === null, "expected null for an unknown author slug");
+});
+
+console.log("\nreal content/faq:");
+check("getPublished() returns all 20 MVP FAQs, none draft", () => {
+  const published = faqSource.getPublished();
+  assert(published.length === 20, `expected 20 published FAQs, got ${published.length}`);
+});
+check("every FAQ category slug is one of the 9 known categories", () => {
+  const knownSlugs = new Set(FAQ_CATEGORIES.map((c) => c.slug));
+  for (const entry of faqSource.getPublished()) {
+    assert(knownSlugs.has(entry.frontmatter.category), `unexpected FAQ category "${entry.frontmatter.category}" in ${entry.filePath}`);
+  }
+});
+check("each of the 9 FAQ categories has at least 1 published entry (MVP)", () => {
+  for (const { slug, label } of FAQ_CATEGORIES) {
+    const count = faqSource.getByCategory(slug).length;
+    assert(count >= 1, `expected category "${label}" (${slug}) to have at least 1 published FAQ, got ${count}`);
+  }
+});
+check("getByCategory() only returns published entries and matches the category", () => {
+  for (const { slug } of FAQ_CATEGORIES) {
+    for (const entry of faqSource.getByCategory(slug)) {
+      assert(entry.frontmatter.draft === false, `getByCategory("${slug}") returned a draft entry: ${entry.filePath}`);
+      assert(entry.frontmatter.category === slug, `getByCategory("${slug}") returned a mismatched category entry: ${entry.filePath}`);
+    }
+  }
+});
+check("all 20 FAQs' authorSlug resolve to a real author", () => {
+  validateFaqAuthorReferences();
+});
+check("all FAQs' relatedTreatmentSlugs resolve to a real /treatment anchor", () => {
+  validateFaqRelatedTreatmentSlugs();
+});
+check("all FAQs' relatedColumnSlugs resolve to a real column file", () => {
+  validateFaqRelatedColumnSlugs();
+});
+check("extractShortAnswer() succeeds on every real FAQ body without throwing", () => {
+  for (const entry of faqSource.getPublished()) {
+    const answer = extractShortAnswer(entry.content, entry.filePath);
+    assert(answer.length > 0, `expected a non-empty short answer for ${entry.filePath}`);
+    assert(answer.length < 400, `expected a genuinely short (1-2 sentence) answer for ${entry.filePath}, got ${answer.length} chars — check the opening paragraph isn't the whole body`);
+  }
+});
+check("promote defaults to false and no MVP entry is promoted yet", () => {
+  for (const entry of faqSource.getPublished()) {
+    assert(entry.frontmatter.promote === false, `expected promote: false for ${entry.filePath} — no FAQ is promoted to an individual URL in this MVP`);
+  }
+});
+
+console.log("\nfixture: extractShortAnswer() structural robustness");
+check("extracts the plain-text opening paragraph, stripped of inline markdown", () => {
+  const answer = extractShortAnswer("**굵은** 문장으로 시작합니다.\n\n다음 문단은 무시됩니다.");
+  assert(answer === "굵은 문장으로 시작합니다.", `expected inline markdown stripped and only the first paragraph, got "${answer}"`);
+});
+check("joins a multi-line opening paragraph into one string", () => {
+  const answer = extractShortAnswer("첫 줄입니다.\n두 번째 줄입니다.\n\n둘째 문단.");
+  assert(answer === "첫 줄입니다. 두 번째 줄입니다.", `expected both lines joined, got "${answer}"`);
+});
+check("skips leading blank lines before the first paragraph", () => {
+  const answer = extractShortAnswer("\n\n   \n실제 답변입니다.");
+  assert(answer === "실제 답변입니다.", `expected leading blank lines skipped, got "${answer}"`);
+});
+expectThrow("throws (not silently guesses) when the body opens with a heading", () => {
+  extractShortAnswer("## 소제목\n\n본문입니다.", "(fixture)");
+});
+expectThrow("throws when the body opens with a horizontal rule", () => {
+  extractShortAnswer("---\n\n본문입니다.", "(fixture)");
+});
+expectThrow("throws when the body opens with an MDX/JSX component tag", () => {
+  extractShortAnswer("<Callout title=\"안내\">내용</Callout>\n\n본문입니다.", "(fixture)");
+});
+expectThrow("throws when the body has no content at all", () => {
+  extractShortAnswer("   \n\n  ", "(fixture)");
+});
+check("ShortAnswerExtractionError is the concrete error type thrown", () => {
+  try {
+    extractShortAnswer("## 제목만 있음", "(fixture)");
+    throw new Error("expected extractShortAnswer to throw");
+  } catch (error) {
+    assert(error instanceof ShortAnswerExtractionError, `expected a ShortAnswerExtractionError, got ${error instanceof Error ? error.constructor.name : typeof error}`);
+  }
 });
 
 console.log("\nfixture: sort order");

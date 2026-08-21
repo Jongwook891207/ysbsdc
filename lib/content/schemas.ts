@@ -86,6 +86,68 @@ export const contentFrontmatterSchema = z
 export type ContentFrontmatterInput = z.input<typeof contentFrontmatterSchema>;
 export type ContentFrontmatterOutput = z.output<typeof contentFrontmatterSchema>;
 
+/**
+ * FAQ frontmatter (stage 6 — Phase 3-B). Deliberately smaller than
+ * `contentFrontmatterSchema`: no `title`/`summary`/`description`/
+ * `thumbnail`/`tags`/`featured`, and — after building and reviewing 20 real
+ * FAQ prototypes — no `shortAnswer` and no `citations` either.
+ *
+ *  - `shortAnswer` was cut because a separately-stored short answer and the
+ *    MDX body's own opening paragraph inevitably drift apart the moment
+ *    someone edits one and not the other. The first paragraph of `content`
+ *    IS the short answer (docs/03 §17 already requires the body to open
+ *    that way) — `lib/extractShortAnswer.ts` reads it from there instead of
+ *    a second field.
+ *  - `citations` was cut because only 3 of the first 20 real FAQs needed a
+ *    literature reference, and those 3 write it as body prose (the same
+ *    convention `content/columns/*.mdx` already uses for "참고문헌") rather
+ *    than a structured field 85% of entries would leave empty. `citation`
+ *    isn't implemented in `lib/jsonld.ts` for the same reason it isn't for
+ *    Article (see docs/07 §11) — not guessed here either.
+ *  - `reviewedBySlug`/`lastReviewed` were cut because grepping all 9 real
+ *    published columns shows zero of them ever set these fields — a
+ *    field unused even in the more mature content type isn't worth carrying
+ *    into a new, leaner one.
+ *  - `category` is a closed enum (unlike the column's free-text `category`)
+ *    because FAQ's 9 categories are fixed UI routes (`app/faq/[category]`)
+ *    — an unrecognized category should fail loudly at content-load time,
+ *    not silently 404 at request time.
+ */
+export const FAQ_CATEGORY_SLUGS = [
+  "implant",
+  "denture",
+  "endodontics",
+  "caries",
+  "gum-checkup",
+  "prosthodontics",
+  "wisdom-tooth",
+  "philosophy",
+  "clinic-info",
+] as const;
+
+export const faqFrontmatterSchema = z
+  .object({
+    question: nonEmptyString("question"),
+    slug: slugSchema,
+    category: z.enum(FAQ_CATEGORY_SLUGS),
+    aliases: z.array(nonEmptyString("aliases[]")).default([]),
+    publishedAt: dateSchema,
+    updatedAt: dateSchema.optional(),
+    authorSlug: slugSchema,
+    relatedTreatmentSlugs: z.array(slugSchema).default([]),
+    relatedColumnSlugs: z.array(slugSchema).default([]),
+    promote: z.boolean().default(false),
+    draft: z.boolean().default(false),
+  })
+  .strict()
+  .refine((data) => !data.updatedAt || data.updatedAt >= data.publishedAt, {
+    message: "updatedAt must not be earlier than publishedAt",
+    path: ["updatedAt"],
+  });
+
+export type FaqFrontmatterInput = z.input<typeof faqFrontmatterSchema>;
+export type FaqFrontmatterOutput = z.output<typeof faqFrontmatterSchema>;
+
 export const authorFrontmatterSchema = z
   .object({
     name: nonEmptyString("name"),

@@ -28,8 +28,8 @@ const CODE_FENCE_PATTERN = /^\s*```/;
 const H2_PATTERN = /^##(?!#)\s+(.+)$/;
 const H3_PATTERN = /^###(?!#)\s+(.+)$/;
 
-/** Strips inline markdown syntax (emphasis/code/links) so heading text reads as plain text in the TOC. */
-function toPlainText(raw: string): string {
+/** Strips inline markdown syntax (emphasis/code/links) so heading text reads as plain text in the TOC. Exported for lib/extractShortAnswer.ts, which needs the same stripping for a paragraph instead of a heading. */
+export function toPlainText(raw: string): string {
   return raw
     .replace(/`([^`]+)`/g, "$1")
     .replace(/\*\*([^*]+)\*\*/g, "$1")

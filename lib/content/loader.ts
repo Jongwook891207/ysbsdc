@@ -176,6 +176,74 @@ export function createContentSource<T extends ContentFrontmatterBase, TIn = T>(
   };
 }
 
+/**
+ * Fields `createCategorizedContentSource()` actually touches. Deliberately
+ * NOT `ContentFrontmatterBase` (the column shape) — FAQ frontmatter doesn't
+ * have `tags`/`featured`, so `getByTag()`/`getFeatured()` aren't offered
+ * here. If a future content type needs those too, reach for
+ * `createContentSource()` instead of widening this interface.
+ */
+interface CategorizedFrontmatterBase {
+  slug: string;
+  draft: boolean;
+  category: string;
+  publishedAt: string;
+}
+
+export interface CategorizedContentSource<T extends CategorizedFrontmatterBase> {
+  getAll(): ContentEntry<T>[];
+  getPublished(): ContentEntry<T>[];
+  getBySlug(slug: string): ContentEntry<T> | null;
+  getAllSlugs(): string[];
+  getByCategory(category: string): ContentEntry<T>[];
+}
+
+/**
+ * Same load/cache/sort machinery as `createContentSource()` above, sized
+ * for a leaner content type (FAQ, stage 6) that doesn't have
+ * `tags`/`featured` — see `CategorizedFrontmatterBase`. Not implemented by
+ * calling `createContentSource()` internally and discarding two methods:
+ * that would still require `T extends ContentFrontmatterBase` at the call
+ * site, which is exactly the constraint FAQ's frontmatter doesn't satisfy.
+ */
+export function createCategorizedContentSource<T extends CategorizedFrontmatterBase, TIn = T>(
+  config: ContentTypeConfig<T, TIn>,
+): CategorizedContentSource<T> {
+  const cache = createCache<ContentEntry<T>[]>();
+
+  function loadAll(): ContentEntry<T>[] {
+    const cached = cache.get();
+    if (cached) return cached;
+
+    const raw = loadRawEntries(config);
+    const entries: ContentEntry<T>[] = raw.map((entry) => ({
+      frontmatter: entry.frontmatter,
+      content: entry.content,
+      filePath: entry.filePath,
+      readingTimeMinutes: estimateReadingTimeMinutes(entry.content),
+    }));
+
+    if (config.sort?.by === "publishedAt") {
+      const direction = config.sort.order === "asc" ? 1 : -1;
+      entries.sort((a, b) => direction * a.frontmatter.publishedAt.localeCompare(b.frontmatter.publishedAt));
+    }
+
+    return cache.set(entries);
+  }
+
+  function published(): ContentEntry<T>[] {
+    return loadAll().filter((entry) => !entry.frontmatter.draft);
+  }
+
+  return {
+    getAll: loadAll,
+    getPublished: published,
+    getBySlug: (slug) => loadAll().find((entry) => entry.frontmatter.slug === slug) ?? null,
+    getAllSlugs: () => loadAll().map((entry) => entry.frontmatter.slug),
+    getByCategory: (category) => published().filter((entry) => entry.frontmatter.category === category),
+  };
+}
+
 export interface SimpleContentSource<T> {
   getAll(): SimpleEntry<T>[];
   getBySlug(slug: string): SimpleEntry<T> | null;

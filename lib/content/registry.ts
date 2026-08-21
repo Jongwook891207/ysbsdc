@@ -1,11 +1,13 @@
 import path from "node:path";
 import type { ZodType, ZodTypeDef } from "zod";
-import { authorFrontmatterSchema, contentFrontmatterSchema } from "./schemas";
+import { authorFrontmatterSchema, contentFrontmatterSchema, faqFrontmatterSchema } from "./schemas";
 import type {
   AuthorFrontmatterInput,
   AuthorFrontmatterOutput,
   ContentFrontmatterInput,
   ContentFrontmatterOutput,
+  FaqFrontmatterInput,
+  FaqFrontmatterOutput,
 } from "./schemas";
 
 /**
@@ -15,7 +17,7 @@ import type {
  * extended one), and a `lib/content/sources/<type>s.ts` that calls
  * `createContentSource(config)` — `loader.ts` itself needs no changes.
  */
-export type ContentTypeKey = "column" | "author" | "question" | "guide" | "case";
+export type ContentTypeKey = "column" | "author" | "faq" | "question" | "guide" | "case";
 
 /** question/guide/case are reserved at the type level only per the approved
  * architecture — no folders, routes, or *_CONFIG entries exist for them yet. */
@@ -61,6 +63,22 @@ export const COLUMN_CONFIG: ContentTypeConfig<ContentFrontmatterOutput, ContentF
   schema: contentFrontmatterSchema,
   sort: { by: "publishedAt", order: "desc" },
   pageSize: 12,
+  hasDrafts: true,
+};
+
+/**
+ * FAQ (stage 6 / Phase 3-B). `pageSize` is omitted on purpose — category
+ * pages show every entry in that category with no pagination (§O of the
+ * design doc: MVP scale doesn't need it; add it back here the day a
+ * category legitimately grows past ~20-30 entries).
+ */
+export const FAQ_CONFIG: ContentTypeConfig<FaqFrontmatterOutput, FaqFrontmatterInput> = {
+  key: "faq",
+  routeSegment: "/faq",
+  contentDir: path.join(CONTENT_ROOT, "faq"),
+  label: "자주 묻는 질문",
+  schema: faqFrontmatterSchema,
+  sort: { by: "publishedAt", order: "desc" },
   hasDrafts: true,
 };
 

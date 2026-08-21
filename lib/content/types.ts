@@ -1,4 +1,4 @@
-import type { ContentFrontmatterOutput, AuthorFrontmatterOutput } from "./schemas";
+import type { ContentFrontmatterOutput, AuthorFrontmatterOutput, FaqFrontmatterOutput } from "./schemas";
 
 /**
  * Content data layer types (stage 4-1). Deliberately separate from the
@@ -20,8 +20,17 @@ export type ContentFrontmatterBase = ContentFrontmatterOutput;
 
 export type ColumnFrontmatter = ContentFrontmatterBase;
 
-/** A loaded, validated content file. */
-export interface ContentEntry<TFrontmatter extends ContentFrontmatterBase = ContentFrontmatterBase> {
+/**
+ * A loaded, validated content file. `TFrontmatter` is deliberately
+ * unconstrained (not `extends ContentFrontmatterBase`) — that base shape is
+ * column-specific (title/summary/thumbnail/tags/faq[]/...), and FAQ (stage
+ * 6, `lib/content/sources/faq.ts`) is a genuinely leaner content type that
+ * doesn't have most of those fields. Only `createContentSource()`
+ * (column/article-shaped types) requires the fuller `ContentFrontmatterBase`;
+ * `createCategorizedContentSource()` (lib/content/loader.ts) works with any
+ * frontmatter shape that has `slug`/`draft`/`category`/`publishedAt`.
+ */
+export interface ContentEntry<TFrontmatter = ContentFrontmatterBase> {
   frontmatter: TFrontmatter;
   /** Raw MDX body, pre-compile — reading time, excerpting, RSS, and (stage 4-2+) MDXRemote all read this. */
   content: string;
@@ -31,6 +40,10 @@ export interface ContentEntry<TFrontmatter extends ContentFrontmatterBase = Cont
 }
 
 export type ColumnEntry = ContentEntry<ColumnFrontmatter>;
+
+/** FAQ frontmatter (stage 6) — see lib/content/schemas.ts#faqFrontmatterSchema for the field list and why it's deliberately smaller than ColumnFrontmatter. */
+export type FaqFrontmatter = FaqFrontmatterOutput;
+export type FaqEntry = ContentEntry<FaqFrontmatter>;
 
 /** A loaded content file for types with no date/draft/tag concept (author). */
 export interface SimpleEntry<TFrontmatter> {
