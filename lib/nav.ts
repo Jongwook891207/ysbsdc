@@ -68,7 +68,10 @@ export const NAV_ENTRIES: NavEntry[] = [
     dropdown: {
       label: "비용 · 내원안내",
       href: "/#location",
-      items: [{ label: "오시는 길", href: "/#location" }],
+      items: [
+        { label: "비급여 진료비 안내", href: "/price" },
+        { label: "오시는 길", href: "/#location" },
+      ],
     },
   },
 ];

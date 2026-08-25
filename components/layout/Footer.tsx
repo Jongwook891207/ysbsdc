@@ -47,6 +47,10 @@ export function Footer() {
             <Link href="/column" className="footer-link">
               원장 칼럼 보기
             </Link>
+            <br />
+            <Link href="/price" className="footer-link">
+              비급여 진료비 안내
+            </Link>
           </div>
         </div>
         <div className="footer-copy">© 2026 {CLINIC.name}. All rights reserved.</div>

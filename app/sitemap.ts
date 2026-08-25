@@ -37,7 +37,7 @@ function lastModifiedOf(entry: ColumnEntry): Date {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes = ["", "/doctor", "/treatment", "/mission", "/column", "/faq"];
+  const staticRoutes = ["", "/doctor", "/treatment", "/mission", "/column", "/faq", "/price"];
   const entries: MetadataRoute.Sitemap = staticRoutes.map((route) => ({
     url: `${SITE_URL}${route}`,
   }));
