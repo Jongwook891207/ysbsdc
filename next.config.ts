@@ -23,6 +23,21 @@ const nextConfig: NextConfig = {
       { source: "/treatment.html", destination: "/treatment", permanent: true },
       { source: "/mission.html", destination: "/mission", permanent: true },
       { source: "/index.html", destination: "/", permanent: true },
+      // Patient Grader re-audit (2026-08-25) found www.ysbsdc.com serving
+      // live 200s alongside the apex domain — every canonical/JSON-LD
+      // @id/sitemap entry already points at apex only (lib/seo.ts's
+      // SITE_URL), but nothing actually redirected the host itself. This
+      // collapses www onto apex in a single hop: Vercel's own HTTPS
+      // upgrade happens first at the edge (http://www → https://www, one
+      // hop, unavoidable and identical to the apex-only path today), then
+      // this rule sends https://www.ysbsdc.com/* straight to
+      // https://ysbsdc.com/* — no added chain beyond that one existing hop.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.ysbsdc.com" }],
+        destination: "https://ysbsdc.com/:path*",
+        permanent: true,
+      },
     ];
   },
 };
