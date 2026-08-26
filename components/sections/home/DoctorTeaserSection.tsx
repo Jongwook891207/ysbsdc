@@ -24,11 +24,11 @@ export function DoctorTeaserSection() {
             &quot;과장된 광고나 자극적인 문구로
             <br className="mobile-only" /> 오시는 치과가 아닙니다.
             <br />
-            <span className="desktop-only-text">진심으로 대화하고,</span>
-            <span className="mobile-only-text">진심을 다해,</span> 치료 중 불편함을 줄이기 위해 세심하게 진료하다 보니
+            제 가족에게 권하지 않을 치료라면
+            <br className="mobile-only" /> 환자분께도 권하지 않습니다.
             <br />
-            어느덧 어르신들과 이웃분들이
-            <br className="mobile-only" /> 먼저 알아봐 주는 치과가 되었습니다.
+            첫 상담부터 치료 후 관리까지,
+            <br className="mobile-only" /> 같은 의사가 계속 함께합니다.
             <br />
             <br />
             과잉진료 걱정 없이,
