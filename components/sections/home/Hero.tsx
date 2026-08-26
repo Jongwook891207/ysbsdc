@@ -13,20 +13,19 @@ export function Hero() {
           마음의 준비가
           <br className="mobile-only" /> 되실 때까지,
           <br />
-          <span className="hero-accent">오늘은</span> 설명만
-          <br className="mobile-only" /> 들으셔도
-          <br className="mobile-only" /> 괜찮습니다.
+          <span className="hero-accent">오늘은</span> 결정하지
+          <br className="mobile-only" /> 않으셔도
+          <br className="mobile-only" /> 됩니다.
         </h1>
         <div className="hero-sub" data-aos="fade-up" data-aos-delay={140}>
           <p>
-            치과 치료 앞의 불안과 무게감을 잘 알기에,
+            지금 치료가 필요한 치아와,
             <br />
-            당일 치료를 성급히 강요하지 않습니다.
+            조금 더 지켜봐도 되는 치아를 나누어 설명드리겠습니다.
             <br />
-            3D CT와 고화질 사진으로 현재 상태를 솔직하게 보여드리고,
+            3D CT와 사진으로 함께 확인한 뒤,
             <br />
-            안심하고 고민하실 수 있는 <span className="highlight-pen">&apos;마음의 시간&apos;</span>을 먼저
-            드리겠습니다.
+            <span className="highlight-pen">치료 결정은 천천히</span> 하셔도 괜찮습니다.
           </p>
         </div>
         <div className="hero-cta" data-aos="fade-up" data-aos-delay={220}>
@@ -46,16 +45,16 @@ export function Hero() {
             <br />
             되실 때까지,
             <br />
-            <span className="highlight-gold">오늘은</span> 설명만 들으셔도 괜찮습니다.
+            <span className="highlight-gold">오늘은</span> 결정하지 않으셔도 됩니다.
           </p>
           <p className="mobile-hero-sub">
-            치과 치료 앞의 두려움과 부담감을 잘 알기에,
+            지금 치료가 필요한 치아와,
             <br />
-            오늘 당장 결정하지 않으셔도 괜찮습니다.
+            조금 더 지켜봐도 되는 치아를 나누어 설명드리겠습니다.
             <br />
-            안심하고 고민하실 수 있는
+            3D CT와 사진으로 함께 확인한 뒤,
             <br />
-            <span className="highlight-marker">&apos;마음의 시간&apos;</span>을 먼저 드리겠습니다.
+            <span className="highlight-marker">치료 결정은 천천히</span> 하셔도 괜찮습니다.
           </p>
           <Link href="/mission" className="mobile-hero-cta">
             우리의 이야기 →

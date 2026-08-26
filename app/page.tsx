@@ -19,7 +19,7 @@ const SEO_DESCRIPTION =
 // og:description in the original <head> is a shorter, share-oriented blurb
 // distinct from the SEO meta description above — kept as its own string.
 const OG_DESCRIPTION =
-  "연세대 세브란스 출신 치과보존과 전문의 김종욱 대표원장의 1:1 책임진료. 마음의 준비가 되실 때까지, 오늘은 설명만 들으셔도 괜찮습니다.";
+  "연세대 세브란스 출신 치과보존과 전문의 김종욱 대표원장의 1:1 책임진료. 마음의 준비가 되실 때까지, 오늘은 결정하지 않으셔도 됩니다.";
 // The original og:image (images/clinic-interior.webp) doesn't exist in
 // public/images (confirmed missing from the source site's own images/
 // folder too) — substituting an existing clinic photo so link previews
