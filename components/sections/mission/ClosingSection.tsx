@@ -20,9 +20,9 @@ export function ClosingSection() {
             연세백세치과가 환자분의 <strong>마지막 종착지</strong>가 되어 드리겠습니다.
           </p>
           <p>
-            마음의 준비가 되셨을 때, 편안하게 방문해 주세요.
+            오늘 결정하지 않으셔도 됩니다.
             <br className="desktop-only closing-break" />
-            진심을 담아, 따뜻하게 맞이하겠습니다.
+            첫 상담은 설명을 듣는 자리로 삼으셔도 괜찮습니다.
           </p>
           <p className="closing-sign">연세백세치과 김종욱 원장</p>
         </div>
