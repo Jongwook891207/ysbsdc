@@ -222,11 +222,36 @@ check("getByCategory() only returns published entries and matches the category, 
       assert(entry.frontmatter.category === category, `getByCategory("${category}") returned a mismatched category entry: ${entry.filePath}`);
     }
   }
-  // The two known draft fixtures use category "implant"/"denture" (an older
-  // English-value scheme no real published column uses) — a stable,
-  // count-free regression check that draft-only categories stay excluded.
-  assert(columnSource.getByCategory("implant").length === 0, 'expected category "implant" (only used by the draft sample implant-guide) to have 0 published entries');
-  assert(columnSource.getByCategory("denture").length === 0, 'expected category "denture" (only used by the draft sample denture-care-basics) to have 0 published entries');
+});
+// The draft-exclusion proof above only checks entries getByCategory()/
+// getByTag() actually return — an empty result vacuously satisfies "every
+// returned entry is published" without proving exclusion is active. This
+// used to be proven with a real draft column's category/tag ("implant"/
+// "denture"/"틀니"), but that only works as long as no real published
+// column ever reuses those values — exactly the assumption that broke once
+// a real column legitimately used tag "틀니". Fixed the same way the
+// content-count assumptions were removed earlier: an isolated temp fixture
+// proves the exclusion directly, independent of what real content exists.
+check("getByCategory()/getByTag() actively exclude a draft entry, not just vacuously return nothing", () => {
+  withTempDir(
+    {
+      "draft-only.mdx": validFrontmatterWithDraft(true, {
+        slug: "draft-only",
+        category: "검증용-draft-category",
+      }).replace("---\n\n## 검증용 소제목", 'tags: ["검증용-draft-tag"]\n---\n\n## 검증용 소제목'),
+    },
+    (dir) => {
+      const tempColumns = createContentSource(tempColumnConfig(dir));
+      assert(
+        tempColumns.getByCategory("검증용-draft-category").length === 0,
+        "expected a category used only by a draft entry to return 0 published entries",
+      );
+      assert(
+        tempColumns.getByTag("검증용-draft-tag").length === 0,
+        "expected a tag used only by a draft entry to return 0 published entries",
+      );
+    },
+  );
 });
 check("getByTag() only returns published entries and includes the queried tag, for every real tag", () => {
   const realTags = new Set(columnSource.getAll().flatMap((entry) => entry.frontmatter.tags));
@@ -236,7 +261,6 @@ check("getByTag() only returns published entries and includes the queried tag, f
       assert(entry.frontmatter.tags.includes(tag), `getByTag("${tag}") returned an entry not actually tagged "${tag}": ${entry.filePath}`);
     }
   }
-  assert(columnSource.getByTag("틀니").length === 0, 'expected tag "틀니" (only used by the draft sample denture-care-basics) to have 0 published entries');
 });
 check("getFeatured() only returns published + featured entries", () => {
   for (const entry of columnSource.getFeatured()) {
