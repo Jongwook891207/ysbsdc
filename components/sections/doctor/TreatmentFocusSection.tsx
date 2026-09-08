@@ -49,7 +49,7 @@ export function TreatmentFocusSection() {
               <span className="treatment-focus-num">{item.num}</span>
               <h3>{item.name}</h3>
               <p className="treatment-focus-judgment">{item.judgment}</p>
-              <span className="treatment-focus-link">자세히 보기 →</span>
+              <span className="treatment-focus-link">{item.name} 진료 기준 보기 →</span>
             </Link>
           ))}
         </div>

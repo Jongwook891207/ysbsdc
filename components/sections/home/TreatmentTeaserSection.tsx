@@ -30,7 +30,7 @@ const TOP_TREATMENTS: TopTreatment[] = [
     href: "/treatment#endodontics",
     badge: "TOP 03",
     icon: "fa-solid fa-syringe",
-    title: "미세 신경치료 & 보존치료",
+    title: "신경치료 & 보존치료",
     desc: "치과보존과 전문의의 자연치아 살리기 노하우",
     delay: 160,
   },

@@ -15,7 +15,7 @@ const CANONICAL_URL = `${SITE_URL}/`;
 
 const SEO_TITLE = "부천 오정구 임플란트·틀니·신경치료 - 연세백세치과의원";
 const SEO_DESCRIPTION =
-  "부천 오정구 원종동·고강동 연세백세치과의원. 연세대 세브란스 출신 치과보존과 전문의 김종욱 대표원장 1:1 책임진료. 무통 신경치료, 어르신 맞춤 틀니, 고강동·원종동 임플란트, 과잉진료 없는 안심 치과.";
+  "부천 오정구 원종동·고강동 연세백세치과의원. 연세대 세브란스 출신 치과보존과 전문의 김종욱 대표원장의 1:1 책임진료. 신경치료가 꼭 필요한지부터 판단하는 자연치아 보존 진료, 어르신 맞춤 틀니, 고강동·원종동 임플란트를 진료합니다.";
 // og:description in the original <head> is a shorter, share-oriented blurb
 // distinct from the SEO meta description above — kept as its own string.
 const OG_DESCRIPTION =
@@ -49,8 +49,6 @@ export const metadata: Metadata = {
     "부천 신경치료",
     "치과보존과 전문의",
     "부천 안아픈 치과",
-    "원종동 과잉진료 없는 치과",
-    "고강동 과잉진료 없는 치과",
     "부천 어르신 맞춤 틀니",
     "부천 네비게이션 임플란트",
     "연세백세치과",

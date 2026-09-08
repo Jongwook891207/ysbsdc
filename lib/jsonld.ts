@@ -170,7 +170,7 @@ export function buildWebSiteJsonLd(): Record<string, unknown> {
  *    institution one is an alumnus of; those are left out rather than
  *    mis-modeled as EducationalOrganization.
  *  - `knowsAbout` (not `medicalSpecialty`): `specialties` is free-text
- *    Korean ("미세 신경치료 (치과보존과 전문)"), not a value from
+ *    Korean ("신경치료 · 재신경치료 (치과보존과 전문)"), not a value from
  *    schema.org's MedicalSpecialty enumeration — `knowsAbout` accepts
  *    free text/Thing and doesn't misrepresent it as a controlled value.
  *  - `sameAs` omitted: no verified official profile URL exists in the

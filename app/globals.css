@@ -2370,6 +2370,12 @@ footer {
     font-size: 32px;
   }
 }
+.treatment-page .kt-lede {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #c9d2e0;
+  line-height: 1.9;
+}
 .treatment-page .kt-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2415,6 +2421,9 @@ footer {
 }
 .treatment-page .kt-grid.kt-grid-3 {
   grid-template-columns: repeat(3, 1fr);
+}
+.treatment-page .kt-grid.kt-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
 }
 .treatment-page .kt-cta {
   display: flex;

@@ -12,7 +12,7 @@ import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "전체 진료 안내";
 const SEO_DESCRIPTION =
-  "부천 오정구 원종동·고강동 연세백세치과의원의 전체 진료 안내. 치과보존과 전문의 미세 신경치료, 맞춤 가이드 임플란트, 어르신 맞춤 틀니 등 12개 진료 과목의 특징과 치료 과정을 확인하세요.";
+  "부천 오정구 원종동·고강동 연세백세치과의원의 전체 진료 안내. 치과보존과 전문의 김종욱 대표원장이 신경치료 필요 여부를 판단하는 기준을 비롯해 맞춤 가이드 임플란트, 어르신 맞춤 틀니 등 12개 진료 과목의 특징과 치료 과정을 확인하세요.";
 // treatment.html's original <head> only had a bare og:url (no og:title/
 // description/image) — completing OG/Twitter here per stage 3-1/3-2's
 // policy. No photo exists for this page (icon/text-only in the source), so

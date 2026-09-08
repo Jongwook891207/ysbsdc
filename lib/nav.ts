@@ -43,7 +43,7 @@ export const NAV_ENTRIES: NavEntry[] = [
         { label: "컴퓨터 분석 가이드", highlight: "임플란트", href: "/treatment#implant" },
         { label: "1:1 맞춤 어르신 틀니 & IARPD", highlight: "틀니", href: "/treatment#denture" },
         {
-          label: "치과보존과 전문의 미세 신경치료",
+          label: "치과보존과 전문의 신경치료",
           highlight: "신경치료",
           href: "/treatment#endodontics",
           divider: true,
