@@ -135,3 +135,81 @@ npm run dev            # next dev, 기본 http://localhost:3000
 로컬에서 `npm install && npm run typecheck && npm run lint && npm run build`가 모두
 통과하는지, `npm run dev`로 GNB/모바일 메뉴/footer/플로팅 바가 기존 사이트와 동일하게
 보이고 동작하는지 확인하신 뒤 알려주시면 3단계로 넘어가겠습니다.
+
+## IndexNow
+
+새 칼럼/FAQ가 발행되거나 기존 발행 콘텐츠가 의미 있게 바뀌었을 때, Bing 등 IndexNow
+참여 검색엔진에게 "이 URL이 바뀌었다"고 알려서 재크롤을 앞당기는 기능입니다. 기존
+`sitemap.xml`(검색엔진이 스스로 도는 지도)을 대체하지 않고 보완합니다.
+
+**Key 관리**: IndexNow key는 비밀값이 아닙니다 — `https://ysbsdc.com/{key}.txt`에 그대로
+공개해서 "이 도메인 소유자가 맞다"는 걸 검색엔진에게 증명하는 용도입니다. 그래서 환경변수가
+아니라 `public/00770b51e6314d84b08b46c8159b5158.txt`라는 정적 파일(IndexNow 공식 문서가
+권장하는 방식 그대로)로 커밋되어 있고, `lib/indexnow.ts`에도 같은 값이 상수로 적혀 있습니다.
+**이 두 곳(파일명·내용 + `lib/indexnow.ts`의 상수)은 항상 같은 값이어야 합니다** — key를
+교체할 일이 생기면 둘을 함께 바꾸세요. Vercel에 별도로 설정할 환경변수는 없습니다.
+
+**자동 제출이 발생하는 시점**: 없습니다 — 이 스크립트는 `next build`/`next dev`/Vercel
+빌드 어디에도 연결돼 있지 않습니다. `/칼럼발행`으로 콘텐츠를 배포하고 production 확인까지
+끝난 뒤, **사람(또는 이 저장소를 다루는 에이전트)이 `npm run indexnow`를 직접 실행**하는
+것이 유일한 트리거입니다. dev 서버 실행이나 Vercel Preview 배포로는 결코 저절로 호출되지
+않습니다.
+
+**제출 대상 판별 방식**: 상태를 담은 파일을 커밋하지 않습니다. 대신 `indexnow-state`라는
+git 브랜치가 "마지막으로 성공 제출한 시점의 HEAD"를 가리키고, 매 실행마다
+`git diff --name-status origin/indexnow-state..HEAD -- content/columns content/faq`로
+**실제 바뀐 파일 목록**을 구합니다. 각 파일에 대해 신규/수정이면 HEAD(현재 워킹트리) 기준,
+삭제면 `git show origin/indexnow-state:<path>`로 옛 리비전 기준 frontmatter를 읽어 발행
+여부(`draft`)를 확인하고, 옛 상태나 새 상태 어느 한쪽이라도 공개 상태였다면 그 URL을
+제출 대상에 포함합니다. 칼럼은 파일 하나당 `/column/{slug}` URL 하나, FAQ는 질문 단위
+URL이 없어(카테고리 허브 페이지만 존재) 같은 카테고리에서 여러 파일이 바뀌어도
+`/faq/{category}` URL 하나로 합쳐 제출합니다(dedupe). **`updatedAt` 필드에 의존하지
+않고 git이 추적하는 실제 파일 변경을 보기 때문에, 사람이 `updatedAt`을 갱신하는 걸
+깜빡해도 놓치지 않습니다** — 실제로 이 저장소의 `content/faq/*.mdx` 대부분이 `updatedAt`을
+아예 안 쓰는데도 정상 감지됩니다(구현 중 직접 검증함). `indexnow-state` 브랜치가
+아직 없으면(최초 실행) 현재 발행된 전체 URL을 한 번 baseline으로 제출합니다.
+제출이 **완전히 성공했을 때만** `git push origin HEAD:refs/heads/indexnow-state`로
+브랜치를 앞으로 이동시킵니다(항상 fast-forward, `--force` 없음) — 실패하면 브랜치를
+움직이지 않으므로 다음 실행에서 그 변경분이 자동으로 다시 잡힙니다. 여러 커밋을 한 번에
+푸시했더라도 `origin/indexnow-state..HEAD` 범위가 그 사이 전부를 포괄합니다.
+
+**삭제 신호**: 칼럼 파일 삭제, 또는 발행된 콘텐츠가 `draft: true`로 되돌아가는 경우
+모두 위 로직에서 "옛 상태는 공개였다"로 잡혀 그 URL이 다시 제출됩니다. IndexNow에는
+별도의 "삭제" 신호가 없어서, 이제 그 URL이 404/변경된 내용을 반환한다는 사실 자체를
+검색엔진이 재크롤로 알게 하는 것이 삭제를 알리는 정석적인 방법입니다.
+
+**draft 제외 방식**: 최초 baseline 제출에는 사이트가 실제로 쓰는
+`columnSource.getPublished()`를 그대로 재사용합니다. 이후의 diff 기반 판단은 각 파일의
+frontmatter를 직접 읽어 `draft !== true`로 판정합니다(스키마의 `draft` 기본값이 `false`인
+것과 동일한 규칙).
+
+**수동 제출**:
+
+```bash
+npm run indexnow -- /column/some-slug /faq/implant
+```
+
+인자로 받은 경로는 항상 `SITE_URL`(`https://ysbsdc.com`) 기준으로만 절대 URL을 만들고,
+그 결과가 production origin과 다르면(다른 호스트 URL을 통째로 넣은 경우 등) 조용히
+무시하지 않고 그 URL을 건너뛴다는 메시지를 출력합니다 — localhost나 다른 도메인을
+실수로 제출할 방법이 없습니다. `--dry-run`을 붙이면 실제 API 호출과 매니페스트 갱신 없이
+"무엇을 제출했을지"만 출력합니다(수동/자동 모드 둘 다 지원).
+
+> Windows Git Bash에서 `/column/...`처럼 `/`로 시작하는 인자를 쓰면 MSYS가 이를 로컬
+> 파일 경로로 오인해 변환해버릴 수 있습니다(예: `C:/Program Files/Git/column/...`). 이때는
+> PowerShell을 쓰거나 `MSYS_NO_PATHCONV=1 npx tsx scripts/indexnow.ts ...`로 실행하세요.
+> 스크립트 자체의 문제가 아니라 Git Bash의 경로 변환 동작입니다.
+
+**로그·오류 확인**: 실행하면 제출한 URL 목록, 개수, HTTP status, 실패 사유가 그대로
+터미널에 출력됩니다. Key 값은 어떤 로그에도 출력하지 않습니다. 429/4xx/5xx는 각각의
+사유를 한 줄로 설명만 하고 재시도하지 않습니다(무한 재시도 없음). 제출이 실패하면
+`indexnow-state` 브랜치를 이동시키지 않으므로, 원인을 고치고 다시 실행하면 실패했던
+URL이 자동으로 다시 잡힙니다.
+
+**문제가 생기면**:
+- `npm run indexnow -- --dry-run`으로 지금 무엇이 잡히는지 먼저 확인
+- `curl https://ysbsdc.com/00770b51e6314d84b08b46c8159b5158.txt`로 key 파일이 실제로
+  응답하는지 확인(내용이 안 나오면 `public/`의 그 파일이 실제로 배포됐는지 확인)
+- 터미널에 출력된 `status`/`reason` 줄이 실패 원인을 그대로 알려줍니다
+- `git branch -r | grep indexnow-state`로 상태 브랜치가 원격에 있는지, 어느 커밋을
+  가리키는지(`git log origin/indexnow-state -1`) 확인 가능
