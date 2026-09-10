@@ -28,6 +28,14 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // 네이버 서치어드바이저 사이트 소유권 확인용 — 페이지별 metadata가 이
+  // 필드를 정의하지 않으므로 root layout의 값이 모든 페이지에 그대로
+  // 상속되어 <head>에 렌더링된다.
+  verification: {
+    other: {
+      "naver-site-verification": "915f7992dc1e335e6d0c7eecdd5ad6c6e2d9299c",
+    },
+  },
 };
 
 export default function RootLayout({
