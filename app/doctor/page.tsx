@@ -9,7 +9,8 @@ import { ProfileSection } from "@/components/sections/doctor/ProfileSection";
 import { ColumnNotesSection } from "@/components/sections/doctor/ColumnNotesSection";
 import { ClosingSection } from "@/components/sections/doctor/ClosingSection";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { buildGraph, buildWebPageJsonLd, personId } from "@/lib/jsonld";
+import { authorSource } from "@/lib/content/sources/authors";
+import { buildGraph, buildPersonJsonLd, buildWebPageJsonLd, personId } from "@/lib/jsonld";
 import { SITE_NAME, absoluteUrl } from "@/lib/seo";
 
 const SEO_TITLE = "대표원장 김종욱";
@@ -55,11 +56,19 @@ export const metadata: Metadata = {
   },
 };
 
-// ProfilePage referencing the canonical Person entity at /doctor/kim-jongwook
-// by @id (same "kim-jongwook" slug buildDentistJsonLd()'s `founder` already
-// hardcodes) — this page stays a brand narrative, not a second, divergent
-// Person declaration. No BreadcrumbList: this page renders no visible
+// ProfilePage whose mainEntity must resolve to a typed Person *within this
+// page's own graph*: Google's ProfilePage validation doesn't follow @id
+// references across URLs, so a bare `{"@id": ...}` pointing at the entity
+// emitted on /doctor/kim-jongwook fails with "mainEntity 개체 유형이
+// 잘못되었습니다" in Search Console. The fix co-emits the same Person node
+// (identical @id, built from the same content/authors frontmatter) here —
+// not a second divergent declaration; consumers merging both pages still
+// see one entity. No BreadcrumbList: this page renders no visible
 // breadcrumb nav, so adding one would assert structure not on the page.
+const doctorAuthor = authorSource.getBySlug("kim-jongwook");
+if (!doctorAuthor) {
+  throw new Error('DoctorStoryPage: authorSlug "kim-jongwook" does not match any file in content/authors/.');
+}
 const doctorJsonLd = buildGraph([
   buildWebPageJsonLd({
     type: "ProfilePage",
@@ -68,6 +77,7 @@ const doctorJsonLd = buildGraph([
     description: SEO_DESCRIPTION,
     mainEntityId: personId("kim-jongwook"),
   }),
+  buildPersonJsonLd(doctorAuthor.frontmatter),
 ]);
 
 export default function DoctorStoryPage() {
