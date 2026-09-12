@@ -12,7 +12,10 @@ export interface TreatmentAnchor {
 }
 
 export const TREATMENT_ANCHORS: Record<string, TreatmentAnchor> = {
-  implant: { label: "임플란트", href: "/treatment#implant" },
+  // 임플란트는 전용 허브 페이지(/implant)가 대표 URL이다. /treatment#implant
+  // 앵커도 계속 동작하지만, relatedTreatmentSlugs 기반 링크(FAQ 허브·칼럼
+  // 하단·가격표)는 허브로 보낸다.
+  implant: { label: "임플란트", href: "/implant" },
   denture: { label: "틀니", href: "/treatment#denture" },
   endodontics: { label: "신경치료", href: "/treatment#endodontics" },
   general: { label: "일반 진료", href: "/treatment#general" },

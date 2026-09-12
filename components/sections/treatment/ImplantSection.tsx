@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CLINIC } from "@/lib/seo";
 import { ModalTriggerButton } from "./ModalTriggerButton";
 import { RelatedColumnLinks } from "./RelatedColumnLinks";
@@ -37,6 +38,11 @@ export function ImplantSection() {
             <br />
             CT와 디지털 가이드를 활용해 수술 위치와 방향을 미리 계획합니다.
           </h2>
+          <p className="kt-lede">
+            김종욱 대표원장이 3D CT로 잇몸뼈와 신경관 위치를 확인하고, 컴퓨터에서 식립 위치·각도·깊이를
+            계획한 뒤 직접 설계한 디지털 가이드(서지컬 가이드)로 수술합니다. 진단부터 수술까지의 자세한
+            과정은 임플란트 안내 페이지에서 확인하실 수 있습니다.
+          </p>
         </div>
         <div className="kt-grid">
           {CARDS.map((c) => (
@@ -48,9 +54,15 @@ export function ImplantSection() {
           ))}
         </div>
         <div className="kt-cta">
-          <ModalTriggerButton index={1} className="btn btn-gold">
-            가이드 임플란트 상세 Q&amp;A 보기
+          <Link href="/implant" className="btn btn-gold">
+            디지털 가이드 임플란트 자세히 보기
+          </Link>
+          <ModalTriggerButton index={1} className="btn btn-outline-light">
+            상세 Q&amp;A 보기
           </ModalTriggerButton>
+          <Link href="/doctor/kim-jongwook" className="btn btn-outline-light">
+            대표원장 김종욱 소개
+          </Link>
           <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-outline-light">
             전화 상담 예약하기
           </a>

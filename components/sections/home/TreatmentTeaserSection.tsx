@@ -12,7 +12,7 @@ interface TopTreatment {
 
 const TOP_TREATMENTS: TopTreatment[] = [
   {
-    href: "/treatment#implant",
+    href: "/implant",
     badge: "TOP 01",
     icon: "fa-solid fa-bullseye",
     title: "디지털 가이드 임플란트",

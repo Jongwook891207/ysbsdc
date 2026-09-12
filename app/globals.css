@@ -2425,6 +2425,65 @@ footer {
 .treatment-page .kt-grid.kt-grid-4 {
   grid-template-columns: repeat(4, 1fr);
 }
+
+/* ===== /implant hub page ===== */
+.implant-page .ip-section {
+  padding: 56px 0;
+}
+.implant-page .ip-section:nth-of-type(even) {
+  background: var(--bg);
+}
+.implant-page .ip-section .container {
+  max-width: 760px;
+}
+.implant-page .ip-section h2 {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--brand);
+  margin-bottom: 20px;
+}
+.implant-page .ip-section p {
+  font-size: 15.5px;
+  color: var(--text);
+  line-height: 1.9;
+  margin: 0 0 14px;
+}
+.implant-page .ip-section ul {
+  margin: 0 0 14px;
+  padding-left: 22px;
+  list-style: disc;
+}
+.implant-page .ip-section li {
+  font-size: 15.5px;
+  color: var(--text);
+  line-height: 1.9;
+}
+.implant-page .ip-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+.implant-page .ip-links a,
+.implant-page .ip-column-list a,
+.implant-page .ip-section p a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.implant-page .ip-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+.implant-page .ip-process {
+  padding: 72px 0;
+}
+@media (min-width: 768px) {
+  .implant-page .ip-section h2 {
+    font-size: 26px;
+  }
+}
 .treatment-page .kt-cta {
   display: flex;
   flex-wrap: wrap;
@@ -3649,13 +3708,15 @@ body.modal-open {
 }
 .column-detail .breadcrumb,
 .column-page .breadcrumb,
-.doctor-profile-page .breadcrumb {
+.doctor-profile-page .breadcrumb,
+.implant-page .breadcrumb {
   max-width: 720px;
   margin: 0 auto 32px;
 }
 .column-detail .breadcrumb ol,
 .column-page .breadcrumb ol,
-.doctor-profile-page .breadcrumb ol {
+.doctor-profile-page .breadcrumb ol,
+.implant-page .breadcrumb ol {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -3668,26 +3729,30 @@ body.modal-open {
 }
 .column-detail .breadcrumb li + li::before,
 .column-page .breadcrumb li + li::before,
-.doctor-profile-page .breadcrumb li + li::before {
+.doctor-profile-page .breadcrumb li + li::before,
+.implant-page .breadcrumb li + li::before {
   content: "/";
   margin-right: 6px;
   color: var(--line);
 }
 .column-detail .breadcrumb a,
 .column-page .breadcrumb a,
-.doctor-profile-page .breadcrumb a {
+.doctor-profile-page .breadcrumb a,
+.implant-page .breadcrumb a {
   color: var(--text-muted);
   text-decoration: none;
 }
 .column-detail .breadcrumb a:hover,
 .column-page .breadcrumb a:hover,
-.doctor-profile-page .breadcrumb a:hover {
+.doctor-profile-page .breadcrumb a:hover,
+.implant-page .breadcrumb a:hover {
   color: var(--brand);
   text-decoration: underline;
 }
 .column-detail .breadcrumb li[aria-current="page"],
 .column-page .breadcrumb li[aria-current="page"],
-.doctor-profile-page .breadcrumb li[aria-current="page"] {
+.doctor-profile-page .breadcrumb li[aria-current="page"],
+.implant-page .breadcrumb li[aria-current="page"] {
   color: var(--brand);
   font-weight: 600;
   /* Long titles shouldn't stretch the breadcrumb row — truncate instead. */

@@ -20,7 +20,7 @@ const FOCUS_ITEMS: FocusItem[] = [
     num: "01",
     name: "임플란트",
     judgment: "치아를 빼야 하는 상황부터 식립 시기와 전체 치료 흐름까지 함께 판단합니다.",
-    href: "/treatment#implant",
+    href: "/implant",
   },
   {
     num: "02",
