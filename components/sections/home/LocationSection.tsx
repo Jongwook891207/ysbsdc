@@ -1,4 +1,5 @@
 import { CLINIC } from "@/lib/seo";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 
 const SEO_TAGS = [
   "#부천원종동치과",
@@ -25,7 +26,9 @@ export function LocationSection() {
               <tr>
                 <th>전화</th>
                 <td>
-                  <a href={`tel:${CLINIC.telephoneDisplay}`}>{CLINIC.telephoneDisplay}</a>
+                  <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="location_section">
+                    {CLINIC.telephoneDisplay}
+                  </TrackedLink>
                 </td>
               </tr>
               <tr>
@@ -46,17 +49,24 @@ export function LocationSection() {
               </tr>
             </tbody>
           </table>
-          <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-navy">
+          <TrackedLink
+            href={`tel:${CLINIC.telephoneDisplay}`}
+            event="phone_click"
+            location="location_section"
+            className="btn btn-navy"
+          >
             📞 전화 문의하기
-          </a>
+          </TrackedLink>
           <div className="seo-tags">
             {SEO_TAGS.map((tag) => (
               <span key={tag}>{tag}</span>
             ))}
           </div>
         </div>
-        <a
+        <TrackedLink
           href={CLINIC.mapUrl}
+          event="map_click"
+          location="location_section"
           target="_blank"
           rel="noopener noreferrer"
           className="loc-map"
@@ -71,7 +81,7 @@ export function LocationSection() {
           <span className="loc-map-name">{CLINIC.name}</span>
           <span className="loc-map-addr">{CLINIC.addressFull}</span>
           <span className="loc-map-btn">네이버지도에서 크게 보기 →</span>
-        </a>
+        </TrackedLink>
       </div>
     </section>
   );

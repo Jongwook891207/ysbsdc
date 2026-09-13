@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 import { ContentListHeader } from "@/components/content/ContentListHeader";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { PRICE_CATEGORIES, PRICE_TOP_NOTE } from "@/components/sections/price/priceList.data";
@@ -141,12 +142,12 @@ export default function PricePage() {
           </div>
 
           <div className="price-cta">
-            <a href={CLINIC.bookingUrl} className="btn btn-navy" target="_self">
+            <TrackedLink href={CLINIC.bookingUrl} event="naver_booking_click" location="cta" className="btn btn-navy" target="_self">
               간편 예약
-            </a>
-            <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-outline">
+            </TrackedLink>
+            <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="cta" className="btn btn-outline">
               전화 문의 {CLINIC.telephoneDisplay}
-            </a>
+            </TrackedLink>
           </div>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import { CLINIC } from "@/lib/seo";
 import { Logo } from "@/components/ui/Logo";
 import { PhoneIcon } from "@/components/ui/icons";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 import { DesktopNav } from "./DesktopNav";
 import { MobileNav } from "./MobileNav";
 
@@ -16,19 +17,27 @@ export function Header() {
         <Logo />
         <DesktopNav />
         <div className="gnb-actions">
-          <a href={`tel:${CLINIC.telephoneDisplay}`} className="gnb-tel">
+          <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="header" className="gnb-tel">
             📞 {CLINIC.telephoneDisplay}
-          </a>
-          <a
+          </TrackedLink>
+          <TrackedLink
             href={`tel:${CLINIC.telephoneDisplay}`}
+            event="phone_click"
+            location="header"
             className="gnb-phone-btn"
             aria-label="전화 문의"
           >
             <PhoneIcon size={17} />
-          </a>
-          <a href={CLINIC.bookingUrl} target="_self" className="btn btn-navy gnb-book-btn">
+          </TrackedLink>
+          <TrackedLink
+            href={CLINIC.bookingUrl}
+            event="naver_booking_click"
+            location="header"
+            target="_self"
+            className="btn btn-navy gnb-book-btn"
+          >
             간편예약
-          </a>
+          </TrackedLink>
           <MobileNav />
         </div>
       </div>

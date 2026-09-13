@@ -1,4 +1,5 @@
 import { CLINIC } from "@/lib/seo";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 import { ModalTriggerButton } from "./ModalTriggerButton";
 import { RelatedColumnLinks } from "./RelatedColumnLinks";
 
@@ -49,9 +50,9 @@ export function DentureSection() {
           <ModalTriggerButton index={2} className="btn btn-navy">
             틀니 &amp; IARPD 상세 Q&amp;A 보기
           </ModalTriggerButton>
-          <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-outline">
+          <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="cta" className="btn btn-outline">
             전화 상담 문의 ({CLINIC.telephoneDisplay})
-          </a>
+          </TrackedLink>
         </div>
         <RelatedColumnLinks treatmentSlug="denture" />
       </div>

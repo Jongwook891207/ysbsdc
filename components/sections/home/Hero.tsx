@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CLINIC } from "@/lib/seo";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 
 /** Ports index.html's `<section class="hero">` — desktop PC redesign + separate mobile-only content block. */
 export function Hero() {
@@ -29,9 +30,9 @@ export function Hero() {
           </p>
         </div>
         <div className="hero-cta" data-aos="fade-up" data-aos-delay={220}>
-          <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-navy">
+          <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="cta" className="btn btn-navy">
             간편한 진료 예약
-          </a>
+          </TrackedLink>
           <a href="#doctor" className="btn btn-outline">
             대표원장 진료 철학 보기
           </a>

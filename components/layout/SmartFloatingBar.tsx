@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CLINIC } from "@/lib/seo";
 import { CalendarIcon, PhoneIcon } from "@/components/ui/icons";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 
 /**
  * Ports `#smartFloatingBar` from index.html — mobile-only (hidden ≥768px
@@ -41,14 +42,25 @@ export function SmartFloatingBar() {
 
   return (
     <nav className={`smart-floating-bar${hidden ? " sfb-hidden" : ""}`}>
-      <a href={`tel:${CLINIC.telephoneDisplay}`} className="sfb-btn sfb-outline">
+      <TrackedLink
+        href={`tel:${CLINIC.telephoneDisplay}`}
+        event="phone_click"
+        location="floating_bar"
+        className="sfb-btn sfb-outline"
+      >
         <PhoneIcon size={15} />
         전화상담
-      </a>
-      <a href={CLINIC.bookingUrl} target="_self" className="sfb-btn sfb-filled">
+      </TrackedLink>
+      <TrackedLink
+        href={CLINIC.bookingUrl}
+        event="naver_booking_click"
+        location="floating_bar"
+        target="_self"
+        className="sfb-btn sfb-filled"
+      >
         <CalendarIcon size={15} />
         네이버 간편예약
-      </a>
+      </TrackedLink>
     </nav>
   );
 }

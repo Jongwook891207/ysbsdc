@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CLINIC } from "@/lib/seo";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 import { ModalTriggerButton } from "./ModalTriggerButton";
 import { RelatedColumnLinks } from "./RelatedColumnLinks";
 
@@ -63,9 +64,9 @@ export function ImplantSection() {
           <Link href="/doctor/kim-jongwook" className="btn btn-outline-light">
             대표원장 김종욱 소개
           </Link>
-          <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-outline-light">
+          <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="cta" className="btn btn-outline-light">
             전화 상담 예약하기
-          </a>
+          </TrackedLink>
         </div>
         <RelatedColumnLinks treatmentSlug="implant" />
       </div>

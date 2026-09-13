@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CLINIC } from "@/lib/seo";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 import { ModalTriggerButton } from "./ModalTriggerButton";
 import { RelatedColumnLinks } from "./RelatedColumnLinks";
 
@@ -82,9 +83,9 @@ export function EndodonticsSection() {
           <ModalTriggerButton index={0} className="btn btn-gold">
             신경치료 &amp; 보존 진료 상세 Q&amp;A 보기
           </ModalTriggerButton>
-          <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-outline-light">
+          <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="cta" className="btn btn-outline-light">
             전화 상담 문의 ({CLINIC.telephoneDisplay})
-          </a>
+          </TrackedLink>
           <Link href="/doctor/kim-jongwook" className="btn btn-outline-light">
             치과보존과 전문의 김종욱 원장 소개
           </Link>

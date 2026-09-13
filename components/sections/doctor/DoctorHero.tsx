@@ -1,4 +1,5 @@
 import { CLINIC } from "@/lib/seo";
+import { TrackedLink } from "@/components/ui/TrackedLink";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 
 /**
@@ -51,9 +52,9 @@ export function DoctorHero() {
             <p>연세대학교 · 원주세브란스병원 수련 · 치과보존과 전문의 · 임상 14년</p>
           </div>
           <div className="hero-cta">
-            <a href={`tel:${CLINIC.telephoneDisplay}`} className="btn btn-navy">
+            <TrackedLink href={`tel:${CLINIC.telephoneDisplay}`} event="phone_click" location="cta" className="btn btn-navy">
               전화 문의하기 ({CLINIC.telephoneDisplay})
-            </a>
+            </TrackedLink>
             <a href="#judgment" className="btn btn-outline">
               김종욱 원장 더 알아보기 ↓
             </a>

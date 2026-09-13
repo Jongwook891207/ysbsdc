@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SmartFloatingBar } from "@/components/layout/SmartFloatingBar";
@@ -77,6 +78,13 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <SmartFloatingBar />
+        {/*
+          GA4 — NEXT_PUBLIC_GA_ID가 설정된 환경(Vercel production)에서만
+          로드된다. 변수가 없으면 아무것도 렌더링하지 않으므로 로컬/프리뷰
+          환경에서 데이터가 섞이지 않는다. 페이지뷰(SPA 라우팅 포함)는
+          GoogleAnalytics가 자동 수집하고, 전환 이벤트는 TrackedLink가 보낸다.
+        */}
+        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
       </body>
     </html>
   );
