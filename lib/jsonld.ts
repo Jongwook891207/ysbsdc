@@ -92,10 +92,14 @@ export function buildFaqJsonLd(items: FaqItem[], canonicalUrl: string): Record<s
  *  - `priceRange` from the old stage-1 stub is dropped: nothing on the
  *    site displays a price range, so a "$" placeholder would be an
  *    invented fact, not a real one.
- *  - `geo` (lat/lng) and `sameAs` (official profile URLs) are omitted —
- *    neither exists anywhere in the codebase's verified data (CLINIC in
- *    lib/seo.ts has no coordinates or social URLs). Add them here the day
- *    real, verified values exist; don't estimate/guess them now.
+ *  - `geo` (lat/lng) is omitted — no verified coordinates exist in the
+ *    codebase (CLINIC in lib/seo.ts has none). Add it the day real,
+ *    verified values exist; don't estimate/guess them now.
+ *  - `sameAs` lists only URLs that act as an external *profile* of this
+ *    clinic entity: currently the Naver Map/Place link (CLINIC.mapUrl,
+ *    also used by `hasMap` — same URL serving two truthful roles). The
+ *    Naver *booking* URL is deliberately NOT here: it's a transaction
+ *    destination, not an entity profile.
  *  - `founder` references the Person entity by `@id` instead of repeating
  *    an inline Physician sub-object (the stage-1 stub's `founder: {
  *    "@type": "Physician", name, medicalSpecialty }` was a second,
@@ -120,6 +124,7 @@ export function buildDentistJsonLd(): Record<string, unknown> {
       addressCountry: CLINIC.address.addressCountry,
     },
     hasMap: CLINIC.mapUrl,
+    sameAs: [CLINIC.mapUrl],
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
