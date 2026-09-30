@@ -4788,3 +4788,93 @@ body.modal-open {
     text-align: center;
   }
 }
+
+/* ============ /cases — 치료 전후 비교 슬라이더 ============ */
+.cases-page .ba-slider {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+  user-select: none;
+  touch-action: none;
+  cursor: ew-resize;
+  margin: 8px 0 4px;
+}
+.cases-page .ba-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+.cases-page .ba-top {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.cases-page .ba-img-fill {
+  object-fit: cover;
+  pointer-events: none;
+}
+.cases-page .ba-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #fff;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.45);
+  transform: translateX(-1px);
+}
+.cases-page .ba-handle {
+  position: absolute;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--point, #d4a373);
+  color: var(--brand, #0f2c59);
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  cursor: ew-resize;
+  padding: 0;
+}
+.cases-page .ba-handle:focus-visible {
+  outline: 3px solid var(--point, #d4a373);
+  outline-offset: 2px;
+}
+.cases-page .ba-tag {
+  position: absolute;
+  bottom: 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  pointer-events: none;
+}
+.cases-page .ba-tag-before {
+  left: 10px;
+  background: rgba(15, 44, 89, 0.78);
+}
+.cases-page .ba-tag-after {
+  right: 10px;
+  background: rgba(212, 163, 115, 0.9);
+}
+.cases-page .case-hint {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted, #64748b);
+  margin: 10px 0 0;
+}
+.cases-page .case-notice {
+  font-size: 12.5px;
+  color: var(--text-muted, #64748b);
+  border-top: 1px dashed var(--line, #e9e2d6);
+  padding-top: 12px;
+  margin-top: 14px;
+}
