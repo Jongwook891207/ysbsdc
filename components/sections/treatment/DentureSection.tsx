@@ -34,15 +34,15 @@ export function DentureSection() {
             </p>
           </div>
           <div className="kd-card kd-highlight">
-            <h3 className="kd-card-title">스마트 IARPD (4개 임플란트 결합 틀니)</h3>
-            <div className="kd-card-sub">건강보험 혜택을 알뜰하게 활용한 실속형 고정 틀니</div>
+            <h3 className="kd-card-title">임플란트 오버덴처 (임플란트 2개 고정 틀니)</h3>
+            <div className="kd-card-sub">자꾸 들뜨는 아래 완전틀니를 임플란트로 붙잡는 방식</div>
             <p>
-              만 65세 이상 국가건강보험 혜택(보험 임플란트 2개)에 비보험 2개를 효율적으로 결합하여, 총 4개의
-              튼튼한 임플란트 기둥을 세운 뒤 틀니를 단단히 고정합니다.
+              아래 완전틀니가 계속 들뜨거나 움직이는 경우, 임플란트 2개를 심고 로케이터(연결 부품)로 틀니를
+              고정해 유지력을 높이는 방식입니다.
             </p>
             <p className="kd-card-note">
-              전체 임플란트 대비 수술 부담과 치료 비용을 낮추면서도, 2개 임플란트 틀니보다 강력한 고정력과
-              씹는 즐거움을 선사합니다.
+              전체 임플란트 대비 수술 범위와 비용 부담을 낮추면서, 일반 틀니보다 안정적인 유지력을 기대할 수
+              있습니다.
             </p>
           </div>
         </div>
